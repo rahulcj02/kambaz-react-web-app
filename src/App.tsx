@@ -1,5 +1,5 @@
 import  Labs  from './Labs/index.tsx';
-
+import Lab1 from './Labs/Lab1.tsx';
 function App() {
 return(
 <div>
