@@ -5,6 +5,7 @@ return(
 <div>
   <h1>Hello world</h1>
   <Labs />
+  <Lab1 />
 </div>
 );
 }
