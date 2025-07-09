@@ -1,8 +1,9 @@
 export default function Lab1() {
   return (
     <div id="wd-lab1">
-      <h2>Lab 1</h2>
-      <h3>HTML Examples</h3>
+      <h1>Heading Tags example(h1)</h1>
+      <h2>Lab 1(h2)</h2>
+      <h3>HTML Examples(h3)</h3>
       <div id="wd-h-tag"> ... </div>
       <div id="wd-p-tag">
         <h4>Paragraph Tag</h4>
@@ -36,7 +37,7 @@ tag to tell browsers to render the gaps.
     <li>Flip and cook the other side.</li>
     <li>Serve and enjoy!</li>
   </ol>
-    My favorite recipe:
+    My favorite recipe: omlet
   <ol id="wd-my-favorite-recipe">
     <li>Crack an egg into a hot pan.</li>
     <li>Add some salt and pepper.</li>
