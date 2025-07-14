@@ -2,7 +2,7 @@
 import { Link, useParams } from "react-router-dom";
 
 export default function Assignments() {
-  const { cid } = useParams<{ cid: string }>();
+  const { courseId: cid } = useParams<{ courseId: string }>();
 
   return (
     <div id="wd-assignments">
