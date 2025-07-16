@@ -1,33 +1,42 @@
-// src/Kambaz/Account/Navigation.tsx
+// File: src/Kambaz/Account/Navigation.tsx
+
 import { NavLink } from "react-router-dom";
+import Nav from "react-bootstrap/Nav";
+import "../styles.css";
 
 export default function AccountNavigation() {
   return (
-    <div id="wd-account-nav">
-      <NavLink
-        to="Signin"
-        className={({ isActive }) =>
-          "wd-nav-link" + (isActive ? " active" : "")
-        }
-      >
-        Signin
-      </NavLink>
-      <NavLink
-        to="Signup"
-        className={({ isActive }) =>
-          "wd-nav-link" + (isActive ? " active" : "")
-        }
-      >
-        Signup
-      </NavLink>
-      <NavLink
-        to="Profile"
-        className={({ isActive }) =>
-          "wd-nav-link" + (isActive ? " active" : "")
-        }
-      >
-        Profile
-      </NavLink>
-    </div>
+    <Nav variant="pills" className="flex-column">
+      <Nav.Item>
+        <Nav.Link
+          as={NavLink}
+          to="/Kambaz/Account/Signin"
+          id="wd-account-signin-link"
+          className="text-danger"
+        >
+          Signin
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link
+          as={NavLink}
+          to="/Kambaz/Account/Signup"
+          id="wd-account-signup-link"
+          className="text-danger"
+        >
+          Signup
+        </Nav.Link>
+      </Nav.Item>
+      <Nav.Item>
+        <Nav.Link
+          as={NavLink}
+          to="/Kambaz/Account/Profile"
+          id="wd-account-profile-link"
+          className="text-danger"
+        >
+          Profile
+        </Nav.Link>
+      </Nav.Item>
+    </Nav>
   );
 }
