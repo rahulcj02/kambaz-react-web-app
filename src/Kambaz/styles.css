@@ -34,9 +34,7 @@ body * {
   --bs-secondary-rgb: 199, 205, 209;
 }
 
-.list-group-item {
-  --bs-list-group-border-color: gray;
-}
+
 
 .wd-lesson {
   border-left: 3px solid green !important;
@@ -53,4 +51,129 @@ body * {
   color: black;
   background-color: white;
   border-left: 3px solid black !important;
+}
+
+/* make every wd-sidebar link red when NOT active */
+.list-group.wd > .list-group-item {
+  /* bootstrap’s “danger” red */
+  color: #dc3545 !important;
+}
+
+/* you already have this, I’ve just combined them into one block */
+.list-group.wd > .list-group-item.active {
+  color: #000 !important;
+  background-color: #fff !important;
+  border-left: 3px solid #000 !important;
+}
+
+
+#wd-modules-controls .btn-secondary,
+#wd-modules-controls .dropdown-toggle.btn-secondary {
+  background-color: #c7cdd1 !important;
+  border-color:     #c7cdd1 !important;
+  color:            #000     !important;
+}
+
+/* Optional: darker on hover */
+#wd-modules-controls .btn-secondary:hover,
+#wd-modules-controls .dropdown-toggle.btn-secondary:hover {
+  background-color: #b0b5ba !important;
+  border-color:     #b0b5ba !important;
+}
+
+
+/* main content shifted right of the left nav */
+@media (min-width: 768px) {
+  #wd-assignments,
+  #wd-assignments-editor {
+    padding-left: 140px !important;
+  }
+}
+
+/* search input group overrides */
+.wd-search-assignment .form-control {
+  border-left: 0;
+}
+.wd-search-assignment .input-group-text {
+  border-right: 0;
+}
+
+/* assignment list styling */
+#wd-assignment-list .wd-assignment-list-item > div {
+  background: #fff;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #dee2e6;
+}
+
+/* green border */
+#wd-assignment-list .wd-assignment-list-item > div {
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+  border-left-color: #198754 !important;
+}
+
+/* shift content to the right of the fixed sidebar */
+@media (min-width: 768px) {
+  .wd-main-content-offset {
+    padding-left: 140px !important;
+  }
+}
+
+/* search box sizing */
+.wd-search-assignment .form-control {
+  min-width: 200px;
+}
+
+/* header card styling */
+.wd-assignments-header .card-body {
+  background-color: #f8f9fa;
+}
+
+/* assignment cards */
+#wd-assignments .card {
+  border-radius: 0.25rem;
+}
+/* only left edge: 4px green */
+.wd-assignment-card {
+  border: 1px solid #dee2e6;     /* keep light grey outer border */
+  border-left: 4px solid #28a745; /* green on left */
+}
+
+
+/* only the snippets you need to add to styles.css */
+
+.wd-main-content-offset {
+  margin-left: 110px; /* clear the fixed sidebar */
+}
+
+#wd-signin-screen,
+#wd-signup-screen,
+#wd-profile-screen {
+  max-width: 400px;
+}
+
+
+
+/* Account nav: only left border on active */
+#wd-account-nav .wd-nav-link.active {
+  border-right: none !important;  /* zap any right border */
+  border-left: 4px solid #000;     /* your “big” left bar */
+  padding-left: 1.25rem;           /* push text clear of the bar */
+  padding-right: 0.75rem;          /* restore your normal right padding */
+}
+
+
+#wd-account-nav .wd-nav-link {
+  text-decoration: none;
+  color: #c0392b;           /* default red */
+  font-size: 1.1rem;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+#wd-account-nav .wd-nav-link.active {
+  color: #000 !important;           /* active = black */
+  border-right: 4px solid #000;     /* little bar on the right */
+  background: none;                 /* ensure no BG override */
 }

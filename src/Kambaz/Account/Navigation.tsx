@@ -1,9 +1,33 @@
-import { Link } from "react-router-dom";
+// src/Kambaz/Account/Navigation.tsx
+import { NavLink } from "react-router-dom";
+
 export default function AccountNavigation() {
   return (
-    <div id="wd-account-navigation">
-      <Link to={`/Kambaz/Account/Signin`}  > Signin  </Link> <br/>
-      <Link to={`/Kambaz/Account/Signup`}  > Signup  </Link> <br/>
-      <Link to={`/Kambaz/Account/Profile`} > Profile </Link> <br/>
+    <div id="wd-account-nav">
+      <NavLink
+        to="Signin"
+        className={({ isActive }) =>
+          "wd-nav-link" + (isActive ? " active" : "")
+        }
+      >
+        Signin
+      </NavLink>
+      <NavLink
+        to="Signup"
+        className={({ isActive }) =>
+          "wd-nav-link" + (isActive ? " active" : "")
+        }
+      >
+        Signup
+      </NavLink>
+      <NavLink
+        to="Profile"
+        className={({ isActive }) =>
+          "wd-nav-link" + (isActive ? " active" : "")
+        }
+      >
+        Profile
+      </NavLink>
     </div>
-);}
+  );
+}

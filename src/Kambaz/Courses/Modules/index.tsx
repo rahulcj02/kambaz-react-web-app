@@ -2,7 +2,6 @@ import { BsGripVertical } from "react-icons/bs"
 import ModulesControls from "./ModulesControls"
 import ModuleControlButtons from "./ModuleControlButtons"
 import LessonControlButtons from "./LessonControlButtons"
-
 export default function Modules() {
     return (
         <div>

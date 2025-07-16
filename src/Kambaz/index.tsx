@@ -1,5 +1,4 @@
 // src/Kambaz/index.tsx
-import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import "./styles.css";
 import KambazNavigation from "./Navigation";
@@ -19,7 +18,7 @@ export default function Kambaz() {
             <td valign="top">
               <KambazNavigation />
             </td>
-            <td valign="top">
+            <td valign="top" className="wd-main-content-offset">
               <Routes>
                 <Route index element={<Navigate to="Account" replace />} />
                 <Route path="Account/*" element={<Account />} />

@@ -1,38 +1,74 @@
-import { Routes, Route } from "react-router-dom";
-import CoursesNavigation from "./Navigation";
-import Modules from "./Modules";
-import Home from "./Home";
-import Assignments from "./Assignments";
-import AssignmentEditor from "./Assignments/Editor";
+// src/Kambaz/Courses/index.tsx
+import {
+  Routes,
+  Route,
+  Navigate,
+  useParams
+} from "react-router-dom";
 import { FaAlignJustify } from "react-icons/fa";
-import PeopleTable from "../People/Table";
-import Piazza from "../Piazza";
-import Zoom from "../Zoom";
-import Quizzes from "../Quizzes";
+
+import CoursesNavigation  from "./Navigation";
+import Home                from "./Home";
+import Modules             from "./Modules";
+import Assignments         from "./Assignments";
+import AssignmentEditor    from "./Assignments/Editor";
+import PeopleTable         from "../People/Table";
+import Piazza              from "../Piazza";
+import Zoom                from "../Zoom";
+import Quizzes             from "../Quizzes";
+import CourseStatus        from "./Home/Status";
 
 export default function Courses() {
-    return (
-        <div id="wd-courses">
-            <h2 className="text-danger">
-                <FaAlignJustify className="me-4 fs-4 mb-1" />
-                Course 1234 </h2> <hr />
-            <div className="d-flex">
-                <div className="d-none d-md-block">
-                    <CoursesNavigation />
-                </div>
-                <div className="flex-fill">
-                    <Routes>
-                        <Route path="Home" element={<Home />} />
-                        <Route path="Modules" element={<Modules />} />
-                        <Route path="Assignments" element={<Assignments />} />
-                        <Route path="Assignments/:aid" element={<AssignmentEditor />} />
-                        <Route path="People" element={<PeopleTable />} />
-                        <Route path="Piazza" element={<Piazza />} />
-                        <Route path="Zoom" element={<Zoom />} />
-                        <Route path="Quizzes" element={<Quizzes />} />
-                    </Routes>
-                </div></div>
-        </div >
+  const { courseId } = useParams<{ courseId: string }>();
 
-    );
+  return (
+    <div id="wd-courses" className="p-3">
+      <h2 className="text-danger">
+        <FaAlignJustify className="me-4 fs-4 mb-1" />
+        Course {courseId}
+      </h2>
+      <hr />
+
+      <div className="d-flex">
+        {/* Sidebar */}
+        <div className="d-none d-md-block me-2">
+          <CoursesNavigation />
+        </div>
+
+        {/* Main panel with nested <Routes> */}
+        <div className="flex-fill">
+          <Routes>
+            {/* redirect /Courses/:id → Home */}
+            <Route index element={<Navigate to="Home" replace />} />
+
+            {/* Home (no status pane) */}
+            <Route path="Home" element={<Home />} />
+
+            {/* Modules (with status pane) */}
+            <Route
+              path="Modules"
+              element={
+                <div className="d-flex">
+                  {/* Module list */}
+                  <Modules />
+                  {/* Status pane only on xl+ */}
+                  <div className="d-none d-xl-block ms-4">
+                    <CourseStatus />
+                  </div>
+                </div>
+              }
+            />
+
+            {/* everything else has no status pane */}
+            <Route path="Assignments" element={<Assignments />} />
+            <Route path="Assignments/:aid" element={<AssignmentEditor />} />
+            <Route path="People" element={<PeopleTable />} />
+            <Route path="Piazza" element={<Piazza />} />
+            <Route path="Zoom" element={<Zoom />} />
+            <Route path="Quizzes" element={<Quizzes />} />
+          </Routes>
+        </div>
+      </div>
+    </div>
+  );
 }
