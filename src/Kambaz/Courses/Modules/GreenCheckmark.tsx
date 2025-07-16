@@ -1,8 +1,18 @@
 // File: src/Kambaz/Courses/Modules/GreenCheckmark.tsx
 import { FaCheckCircle, FaCircle } from "react-icons/fa";
-export default function GreenCheckmark() {
+import React from "react";
+
+// Allow passing className, style, etc.
+export default function GreenCheckmark(
+  props: React.HTMLAttributes<HTMLSpanElement>
+) {
+  // merge incoming className with your defaults
+  const { className = "", ...rest } = props;
   return (
-    <span className="me-1 position-relative">
+    <span
+      {...rest}
+      className={`${className} me-1 position-relative`}
+    >
       <FaCheckCircle
         style={{ top: "2px" }}
         className="text-success me-1 position-absolute fs-5"
