@@ -11,7 +11,7 @@ export default function KambazNavigation() {
 
   const links = [
     { label: "Dashboard", path: "/Kambaz/Dashboard", icon: AiOutlineDashboard },
-    { label: "Courses", path: "/Kambaz/Dashboard", icon: LiaBookSolid }, // Note: Courses -> Dashboard
+    { label: "Courses",   path: "/Kambaz/Courses/RS101/Home",  icon: LiaBookSolid },
     { label: "Calendar", path: "/Kambaz/Calendar", icon: IoCalendarOutline },
     { label: "Inbox", path: "/Kambaz/Inbox", icon: FaInbox },
     { label: "Labs", path: "/Labs", icon: LiaCogSolid },
