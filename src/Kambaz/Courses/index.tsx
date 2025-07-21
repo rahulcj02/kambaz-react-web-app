@@ -3,29 +3,35 @@ import {
   Routes,
   Route,
   Navigate,
-  useParams
+  useParams,
+  useLocation
 } from "react-router-dom";
 import { FaAlignJustify } from "react-icons/fa";
 
-import CoursesNavigation  from "./Navigation";
-import Home                from "./Home";
-import Modules             from "./Modules";
-import Assignments         from "./Assignments";
-import AssignmentEditor    from "./Assignments/Editor";
-import PeopleTable         from "../People/Table";
-import Piazza              from "../Piazza";
-import Zoom                from "../Zoom";
-import Quizzes             from "../Quizzes";
-import CourseStatus        from "./Home/Status";
+import CoursesNavigation from "./Navigation";
+import Home from "./Home";
+import Modules from "./Modules";
+import Assignments from "./Assignments";
+import AssignmentEditor from "./Assignments/Editor";
+import PeopleTable from "../People/Table";
+import Piazza from "../Piazza";
+import Zoom from "../Zoom";
+import Quizzes from "../Quizzes";
+import CourseStatus from "./Home/Status";
+import courses from "../Database/courses.json"; // Make sure this file exists and is correct
 
 export default function Courses() {
   const { courseId } = useParams<{ courseId: string }>();
+  const { pathname } = useLocation();
+
+  const course = courses.find((c) => c._id === courseId);
+  const currentSection = pathname.split("/")[4] || "Home";
 
   return (
     <div id="wd-courses" className="p-3">
       <h2 className="text-danger">
         <FaAlignJustify className="me-4 fs-4 mb-1" />
-        Course {courseId}
+        {course ? course.name : `Course ${courseId}`} &gt; {currentSection}
       </h2>
       <hr />
 
@@ -66,6 +72,7 @@ export default function Courses() {
             <Route path="Piazza" element={<Piazza />} />
             <Route path="Zoom" element={<Zoom />} />
             <Route path="Quizzes" element={<Quizzes />} />
+            <Route path="Grades" element={<div>Grades Component</div>} />
           </Routes>
         </div>
       </div>

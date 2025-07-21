@@ -3,10 +3,20 @@ import { AiOutlineDashboard } from "react-icons/ai";
 import { IoCalendarOutline }   from "react-icons/io5";
 import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
 import { FaInbox, FaRegCircleUser }  from "react-icons/fa6";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import "./styles.css";
 
 export default function KambazNavigation() {
+  useLocation();
+
+  const links = [
+    { label: "Dashboard", path: "/Kambaz/Dashboard", icon: AiOutlineDashboard },
+    { label: "Courses", path: "/Kambaz/Dashboard", icon: LiaBookSolid }, // Note: Courses -> Dashboard
+    { label: "Calendar", path: "/Kambaz/Calendar", icon: IoCalendarOutline },
+    { label: "Inbox", path: "/Kambaz/Inbox", icon: FaInbox },
+    { label: "Labs", path: "/Labs", icon: LiaCogSolid },
+  ];
+
   return (
     <div
       id="wd-kambaz-navigation"
@@ -24,7 +34,7 @@ export default function KambazNavigation() {
         <img src="/images/NEU.jpg" width="75px" alt="Northeastern" />
       </a>
 
-      {/* Account: always black bg, white text & icon */}
+      {/* Account link remains fixed */}
       <NavLink
         to="/Kambaz/Account"
         id="wd-account-link"
@@ -35,74 +45,25 @@ export default function KambazNavigation() {
         Account
       </NavLink>
 
-      {/* Dashboard: active gets white bg/red text, inactive black bg/white text */}
-     <NavLink
-        to="/Kambaz/Dashboard"
-        id="wd-dashboard-link"
-        className="list-group-item text-center border-0 bg-white text-danger"
-      >
-        <AiOutlineDashboard className="fs-1 text-danger" /><br />
-        <span className="text-danger">Dashboard</span>
-      </NavLink>
-
-      {/* Courses: same active/inactive pattern */}
-      <NavLink
-        to="/Kambaz/Courses/1234/Home" 
-        id="wd-course-link"
-        className={({ isActive }) =>
-          isActive
-            ? "list-group-item text-center border-0 bg-white text-danger"
-            : "list-group-item text-center border-0 bg-black text-white"
-        }
-      >
-        <LiaBookSolid className="fs-1 text-danger" />
-        <br />
-        Courses
-      </NavLink>
-
-      {/* Calendar */}
-      <NavLink
-        to="/Kambaz/Calendar"
-        id="wd-calendar-link"
-        className={({ isActive }) =>
-          isActive
-            ? "list-group-item text-center border-0 bg-white text-danger"
-            : "list-group-item text-center border-0 bg-black text-white"
-        }
-      >
-        <IoCalendarOutline className="fs-1 text-danger" />
-        <br />
-        Calendar
-      </NavLink>
-
-      {/* Inbox */}
-      <NavLink
-        to="/Kambaz/Inbox"
-        id="wd-inbox-link"
-        className={({ isActive }) =>
-          isActive
-            ? "list-group-item text-center border-0 bg-white text-danger"
-            : "list-group-item text-center border-0 bg-black text-white"
-        }
-      >
-        <FaInbox className="fs-1 text-danger" />
-        <br />
-        Inbox
-      </NavLink>
-
-      {/* Labs/Settings */}
-      <NavLink
-        to="/Labs"
-        id="wd-labs-link"
-        className={({ isActive }) =>
-          isActive
-            ? "list-group-item text-center border-0 bg-white text-danger"
-            : "list-group-item text-center border-0 bg-black text-white"
-        }
-      >
-        <LiaCogSolid className="fs-1 text-danger" /><br />
-        Labs
-      </NavLink>
+      {/* Dynamically generated links */}
+      {links.map((link) => {
+        const Icon = link.icon;
+        return (
+          <NavLink
+            key={link.label}
+            to={link.path}
+            className={({ isActive }) =>
+              isActive
+                ? "list-group-item text-center border-0 bg-white text-danger"
+                : "list-group-item text-center border-0 bg-black text-white"
+            }
+          >
+            <Icon className="fs-1 text-danger" />
+            <br />
+            {link.label}
+          </NavLink>
+        );
+      })}
     </div>
   );
 }

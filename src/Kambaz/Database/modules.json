@@ -1,0 +1,29 @@
+[
+  {
+    "course": "RS101",
+    "name": "Introduction to Rocket Propulsion",
+    "lessons": [
+      "History of Rocketry",
+      "Rocket Propulsion Fundamentals",
+      "Rocket Engine Types"
+    ]
+  },
+  {
+    "course": "RS102",
+    "name": "Fundamentals of Aerodynamics",
+    "lessons": [
+      "Principles of Fluid Dynamics",
+      "Lift and Drag",
+      "Airfoil Design"
+    ]
+  },
+  {
+    "course": "RS103",
+    "name": "Spacecraft Design Basics",
+    "lessons": [
+      "Spacecraft Structures",
+      "Thermal Control Systems",
+      "Power Systems"
+    ]
+  }
+]

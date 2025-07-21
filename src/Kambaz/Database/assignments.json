@@ -1,0 +1,38 @@
+[
+  {
+    "_id": "A1",
+    "course": "RS101",
+    "title": "Rocket Propulsion Basics",
+    "description": "Introduction to propulsion systems.",
+    "points": 100,
+    "dueDate": "2024-05-10",
+    "availableDate": "2024-05-01"
+  },
+  {
+    "_id": "A2",
+    "course": "RS101",
+    "title": "Rocket Engine Design",
+    "description": "Detailed study of rocket engines.",
+    "points": 150,
+    "dueDate": "2024-06-01",
+    "availableDate": "2024-05-15"
+  },
+  {
+    "_id": "A1",
+    "course": "RS102",
+    "title": "Aerodynamics Fundamentals",
+    "description": "Core principles of aerodynamics.",
+    "points": 100,
+    "dueDate": "2024-05-15",
+    "availableDate": "2024-05-05"
+  },
+  {
+    "_id": "A2",
+    "course": "RS102",
+    "title": "Lift and Drag",
+    "description": "Analysis of lift and drag forces on airfoils.",
+    "points": 100,
+    "dueDate": "2024-06-01",
+    "availableDate": "2024-05-20"
+  }
+]

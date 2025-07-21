@@ -1,6 +1,80 @@
+import VariablesAndConstants from "./VariablesAndConstants";
+import VariableTypes from "./VariableTypes";
+import BooleanVariables from "./BooleanVariables";
+import IfElse from "./IfElse";
+import TernaryOperator from "./TernaryOperator";
+import ConditionalOutputIfElse from "./ConditionalOutputIfElse";
+import ConditionalOutputInline from "./ConditionalOutputInline";
+import LegacyFunctions from "./LegacyFunctions";
+import ArrowFunctions from "./ArrowFunctions";
+import ImpliedReturn from "./ImpliedReturn";
+import TemplateLiterals from "./TemplateLiterals";
+import SimpleArrays from "./SimpleArrays";
+import ArrayIndexAndLength from "./ArrayIndexAndLength";
+import AddingAndRemovingToFromArrays from "./AddingAndRemovingToFromArrays";
+import ForLoops from "./ForLoops";
+import MapFunction from "./MapFunction";
+import FindFunction from "./FindFunction";
+import FindIndex from "./FindIndex";
+import FilterFunction from "./FilterFunction";
+import JsonStringify from "./JsonStringify";
+import House from "./House";
+import TodoList from "./todos/TodoList";
+import Spreading from "./Spreading";
+import Destructuring from "./Destructuring";
+import FunctionDestructuring from "./FunctionDestructuring";
+import DestructuringImports from "./DestructuringImports";
+import Classes from "./Classes";
+import Styles from "./Styles";
+import Add from "./Add";
+import Square from "./Square";
+import Highlight from "./Highlight";
+import PathParameters from "./PathParameters";
+
 export default function Lab3() {
+  console.log("Hello World!"); // Log message to console
+
   return (
-    <div>
-      <h2>Lab 3</h2>
+    <div id="wd-lab3" className="container">
+      <h3>Lab 3</h3>
+      <Add a={3} b={4} />
+      <h4>Square of 4</h4>
+      <Square>4</Square>
+      <Highlight>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit eaque
+        illo minus cum, saepe totam vel nihil repellat nemo explicabo excepturi
+        consectetur.
+      </Highlight>
+      <PathParameters />
+      {/* Previous components */}
+      <VariablesAndConstants />
+      <VariableTypes />
+      <BooleanVariables />
+      <IfElse />
+      <TernaryOperator />
+      <ConditionalOutputIfElse />
+      <ConditionalOutputInline />
+      <LegacyFunctions />
+      <ArrowFunctions />
+      <ImpliedReturn />
+      <TemplateLiterals />
+      <SimpleArrays />
+      <ArrayIndexAndLength />
+      <AddingAndRemovingToFromArrays />
+      <ForLoops />
+      <MapFunction />
+      <FindFunction />
+      <FindIndex />
+      <FilterFunction />
+      <JsonStringify />
+      <House />
+      <TodoList />
+      <Spreading />
+      <Destructuring />
+      <FunctionDestructuring />
+      <DestructuringImports />
+      <Classes />
+      <Styles />
     </div>
-);}
+  );
+}

@@ -18,9 +18,9 @@ export default function Kambaz() {
             <td valign="top">
               <KambazNavigation />
             </td>
-            <td valign="top" className="wd-main-content-offset">
+            <td valign="top" className="wd-main-content-offset p-3">
               <Routes>
-                <Route index element={<Navigate to="Account" replace />} />
+                <Route path="/" element={<Navigate to="Account" />} />
                 <Route path="Account/*" element={<Account />} />
                 <Route path="Dashboard" element={<Dashboard />} />
                 {/* capture courseId for nested Courses */}
