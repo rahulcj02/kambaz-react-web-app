@@ -1,40 +1,55 @@
 // src/Kambaz/Account/Signin.tsx
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "./reducer";
+import { users } from "../Database";
 
 export default function Signin() {
+  const [credentials, setCredentials] = useState({ loginId: "", password: "" });
+  const dispatch = useDispatch();
   const nav = useNavigate();
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    nav("/Kambaz/Account/Profile");
+
+  const signin = () => {
+    const user = (users as any[]).find(
+      (u) => u.loginId === credentials.loginId && u.password === credentials.password
+    );
+    if (user) {
+      dispatch(setCurrentUser(user));
+      nav("/Kambaz/Dashboard");
+    } else {
+      alert("Invalid credentials");
+    }
   };
 
   return (
     <div id="wd-signin-screen" className="p-4 wd-main-content-offset">
       <h1>Sign in</h1>
-      <Form onSubmit={onSubmit}>
+      <Form.Group className="mb-2">
         <Form.Control
           id="wd-username"
           placeholder="username"
-          className="mb-2"
+          value={credentials.loginId}
+          onChange={(e) =>
+            setCredentials({ ...credentials, loginId: e.target.value })
+          }
         />
+      </Form.Group>
+      <Form.Group className="mb-2">
         <Form.Control
           id="wd-password"
           type="password"
           placeholder="password"
-          className="mb-2"
+          value={credentials.password}
+          onChange={(e) =>
+            setCredentials({ ...credentials, password: e.target.value })
+          }
         />
-        <Button
-          id="wd-signin-btn"
-          type="submit"
-          className="btn btn-primary w-100 mb-2"
-        >
-          Signin
-        </Button>
-      </Form>
-      <Link id="wd-signup-link" to="/Kambaz/Account/Signup">
-        Signup
-      </Link>
+      </Form.Group>
+      <Button id="wd-signin-btn" onClick={signin} className="w-100">
+        Sign In
+      </Button>
     </div>
   );
 }

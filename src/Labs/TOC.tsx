@@ -24,6 +24,13 @@ export default function TOC() {
           Lab 3
         </Nav.Link>
       </Nav.Item>
+      {/* ── New Lab 4 Link ─────────────────────────────────────────────────────── */}
+      <Nav.Item>
+        <Nav.Link as={Link} to="/Labs/Lab4" active={isActive("/Labs/Lab4")}>
+          Lab 4
+        </Nav.Link>
+      </Nav.Item>
+      {/* ───────────────────────────────────────────────────────────────────────── */}
       <Nav.Item>
         <Nav.Link as={Link} to="/Kambaz" active={isActive("/Kambaz")}>
           Kambaz

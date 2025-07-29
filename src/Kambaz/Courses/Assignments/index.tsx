@@ -1,13 +1,47 @@
+// File: src/Kambaz/Courses/Assignments/index.tsx
 import { Link, useParams } from "react-router-dom";
-import { FaSearch, FaPlus, FaCheckCircle, FaRegFileAlt } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "../../store";
+import {
+  FaSearch,
+  FaPlus,
+  FaEdit,
+  FaCheckCircle,
+  FaRegFileAlt,
+  FaTrashAlt,
+} from "react-icons/fa";
 import { BsGripVertical, BsThreeDotsVertical } from "react-icons/bs";
-import { Card, Button, Row, Col, InputGroup, FormControl } from "react-bootstrap";
-import { assignments } from "../../Database";
+import {
+  Card,
+  Button,
+  Row,
+  Col,
+  InputGroup,
+  FormControl,
+} from "react-bootstrap";
 import "../../styles.css";
+import { deleteAssignment } from "./reducer";
 
 export default function Assignments() {
   const { courseId } = useParams<{ courseId: string }>();
-  const courseAssignments = assignments.filter((a: any) => a.course === courseId);
+  const dispatch = useDispatch();
+  const allAssignments = useSelector(
+    (s: RootState) => s.assignments.assignments
+  );
+  const courseAssignments = allAssignments.filter(
+    (a) => a.course === courseId
+  );
+  const currentUser = useSelector(
+    (s: RootState) => s.account.currentUser
+  );
+  const isFaculty =
+    currentUser?.role === "Instructor" || currentUser?.role === "Admin";
+
+  const onDelete = (aid: string) => {
+    if (window.confirm("Are you sure you want to delete this assignment?")) {
+      dispatch(deleteAssignment(aid));
+    }
+  };
 
   return (
     <div id="wd-assignments" className="p-3 wd-main-content-offset">
@@ -22,13 +56,19 @@ export default function Assignments() {
           </InputGroup>
         </Col>
         <Col md={6} className="text-end">
-          <Button variant="outline-secondary" className="me-2">
-            + Group
-          </Button>
-          <Button variant="danger">
-            <FaPlus className="me-1" />
-            Assignment
-          </Button>
+          {isFaculty && (
+            <>
+              <Button variant="outline-secondary" className="me-2">
+                + Group
+              </Button>
+              <Link to={`/Kambaz/Courses/${courseId}/Assignments/New`}>
+                <Button variant="danger">
+                  <FaPlus className="me-1" />
+                  Assignment
+                </Button>
+              </Link>
+            </>
+          )}
         </Col>
       </Row>
 
@@ -40,10 +80,14 @@ export default function Assignments() {
               <BsGripVertical className="me-3 fs-4 text-secondary" />
               <Card.Title className="mb-0 flex-grow-1">ASSIGNMENTS</Card.Title>
               <span className="text-muted small me-3">40% of Total</span>
-              <Button variant="link" className="p-0">
-                <FaPlus />
-              </Button>
-              <BsThreeDotsVertical className="ms-3 text-secondary" />
+              {isFaculty && (
+                <>
+                  <Button variant="link" className="p-0">
+                    <FaPlus />
+                  </Button>
+                  <BsThreeDotsVertical className="ms-3 text-secondary" />
+                </>
+              )}
             </Card.Body>
           </Card>
         </Col>
@@ -51,7 +95,7 @@ export default function Assignments() {
 
       {/* Assignment cards */}
       <Row xs={1} className="g-3">
-        {courseAssignments.map((a: any) => (
+        {courseAssignments.map((a) => (
           <Col key={a._id}>
             <Card className="wd-assignment-card">
               <Card.Body className="d-flex align-items-center p-3">
@@ -60,19 +104,51 @@ export default function Assignments() {
                 <div className="flex-grow-1">
                   <Link
                     to={`/Kambaz/Courses/${courseId}/Assignments/${a._id}`}
-                    className="h5 mb-1 text-decoration-none"
+                    className="h5 mb-1 text-decoration-none text-dark"
                   >
                     {a.title}
                   </Link>
                   <div className="small">
                     <span className="text-danger">Multiple Modules</span> |{" "}
-                    <span className="text-secondary">Available {a.availableDate}</span> |{" "}
-                    <span className="text-secondary">Due {a.dueDate}</span> |{" "}
+                    <span className="text-secondary">
+                      Available {a.availableDate}
+                    </span>{" "}
+                    |{" "}
+                    <span className="text-secondary">
+                      Due {a.dueDate}
+                    </span>{" "}
+                    |{" "}
                     <span className="text-secondary">{a.points} pts</span>
                   </div>
                 </div>
                 <FaCheckCircle className="fs-4 text-success me-3" />
-                <BsThreeDotsVertical className="text-secondary" />
+                {isFaculty && (
+  <>
+    {/* Edit button */}
+    <Link to={`/Kambaz/Courses/${courseId}/Assignments/${a._id}`}>
+      <Button
+        variant="link"
+        className="text-warning p-0 me-3"
+        aria-label="Edit assignment"
+      >
+        <FaEdit />
+      </Button>
+    </Link>
+
+    {/* Delete button */}
+    <Button
+      variant="link"
+      className="text-danger p-0 me-3"
+      aria-label="Delete assignment"
+      onClick={() => onDelete(a._id)}
+    >
+      <FaTrashAlt />
+    </Button>
+
+    <BsThreeDotsVertical className="text-secondary" />
+  </>
+)}
+
               </Card.Body>
             </Card>
           </Col>

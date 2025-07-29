@@ -1,33 +1,41 @@
 // File: src/Kambaz/Courses/Modules/ModulesControls.tsx
+import React, { useState } from "react";
 import { FaPlus, FaBan } from "react-icons/fa";
 import GreenCheckmark from "./GreenCheckmark";
 import { Button, Dropdown } from "react-bootstrap";
+import ModuleEditor from "./ModuleEditor";
 
-export default function ModulesControls() {
+interface ModulesControlsProps {
+  moduleName: string;
+  setModuleName: React.Dispatch<React.SetStateAction<string>>;
+  addModule: () => void;
+}
+
+export default function ModulesControls({
+  moduleName,
+  setModuleName,
+  addModule,
+}: ModulesControlsProps) {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
     <div
       id="wd-modules-controls"
       className="d-flex justify-content-end align-items-center"
     >
-      {/* Collapse All (grey bg, black text) */}
-      <Button
-        id="wd-collapse-all"
-        variant="secondary"
-        className="me-2 text-dark"
-      >
+      {/* Collapse All */}
+      <Button id="wd-collapse-all" variant="secondary" className="me-2 text-dark">
         Collapse All
       </Button>
 
-      {/* View Progress (grey bg, black text) */}
-      <Button
-        id="wd-view-progress"
-        variant="secondary"
-        className="me-2 text-dark"
-      >
+      {/* View Progress */}
+      <Button id="wd-view-progress" variant="secondary" className="me-2 text-dark">
         View Progress
       </Button>
 
-      {/* Publish All dropdown (grey bg, black text) */}
+      {/* Publish All dropdown */}
       <Dropdown className="me-2">
         <Dropdown.Toggle
           id="wd-publish-all-btn"
@@ -38,8 +46,6 @@ export default function ModulesControls() {
           Publish All
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          {/* Removed the duplicate Publish All item here */}
-
           <Dropdown.Item id="wd-publish-all-modules-and-items">
             <GreenCheckmark className="me-1" />
             Publish all modules and items
@@ -59,17 +65,21 @@ export default function ModulesControls() {
         </Dropdown.Menu>
       </Dropdown>
 
-      {/* + Module (red bg, stays far right) */}
-      <Button
-        id="wd-add-module-btn"
-        variant="danger"
-      >
-        <FaPlus
-          className="position-relative me-2"
-          style={{ bottom: "1px" }}
-        />
+      {/* + Module button */}
+      <Button id="wd-add-module-btn" variant="danger" onClick={handleShow}>
+        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
         Module
       </Button>
+
+      {/* ModuleEditor modal */}
+      <ModuleEditor
+        show={show}
+        handleClose={handleClose}
+        dialogTitle="Add Module"
+        moduleName={moduleName}
+        setModuleName={setModuleName}
+        addModule={addModule}
+      />
     </div>
   );
 }

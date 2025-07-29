@@ -1,11 +1,37 @@
 // File: src/Kambaz/Courses/Modules/ModuleControlButtons.tsx
-import { BsPlus, BsThreeDotsVertical } from "react-icons/bs";
+import { FaTrash } from "react-icons/fa";
+import { FaPencil } from "react-icons/fa6";
+import GreenCheckmark from "./GreenCheckmark";
+import { BsPlus } from "react-icons/bs";
+import { IoEllipsisVertical } from "react-icons/io5";
 
-export default function ModuleControlButtons() {
+interface ModuleControlButtonsProps {
+  moduleId: string;
+  deleteModule: (moduleId: string) => void;
+  editModule: (moduleId: string) => void;
+}
+
+export default function ModuleControlButtons({
+  moduleId,
+  deleteModule,
+  editModule,
+}: ModuleControlButtonsProps) {
   return (
     <div className="float-end">
-      <BsPlus className="me-2 fs-3" />
-      <BsThreeDotsVertical className="fs-4" />
+      {/* Edit (pencil) */}
+      <FaPencil
+        onClick={() => editModule(moduleId)}
+        className="text-primary me-3"
+      />
+      {/* Delete (trash) */}
+      <FaTrash
+        onClick={() => deleteModule(moduleId)}
+        className="text-danger me-2 mb-1"
+      />
+      {/* The rest of the controls */}
+      <GreenCheckmark />
+      <BsPlus className="fs-1" />
+      <IoEllipsisVertical className="fs-4" />
     </div>
   );
 }

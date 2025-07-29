@@ -1,100 +1,161 @@
+// File: src/Kambaz/Courses/Assignments/Editor.tsx
+import { useState, useEffect } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
-import { useParams, Link } from "react-router-dom";
-import { assignments } from "../../Database";
+import { useParams, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "../../store";
+import { addAssignment, updateAssignment, type Assignment } from "./reducer";
 
 export default function AssignmentEditor() {
   const { courseId, aid } = useParams<{ courseId: string; aid: string }>();
-  const assignment = assignments.find(
-    (a: any) => a.course === courseId && a._id === aid
-  );
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  if (!assignment) return <div className="p-4">Assignment not found.</div>;
+  const all = useSelector((s: RootState) => s.assignments.assignments);
+  const orig = all.find((a) => a._id === aid && a.course === courseId);
+
+  const currentUser = useSelector((s: RootState) => s.account.currentUser);
+  const isFaculty =
+    currentUser?.role === "Instructor" || currentUser?.role === "Admin";
+  useEffect(() => {
+    if (!isFaculty) {
+      navigate(`/Kambaz/Courses/${courseId}/Assignments`, { replace: true });
+    }
+  }, [isFaculty, courseId, navigate]);
+
+  if (!orig && aid !== "New") {
+    return <div className="p-4">Assignment not found.</div>;
+  }
+
+  const [form, setForm] = useState<Assignment>({
+    _id:            orig?._id            || "New",
+    course:         orig?.course         || courseId!,
+    title:          orig?.title          || "",
+    description:    orig?.description    || "",
+    points:         orig?.points         || 0,
+    dueDate:        orig?.dueDate        || "",
+    availableDate:  orig?.availableDate  || "",
+  });
+  
+
+  const onSave = () => {
+    if (aid === "New") {
+      dispatch(addAssignment(form));
+    } else {
+      dispatch(updateAssignment(form));
+    }
+    navigate(`/Kambaz/Courses/${courseId}/Assignments`);
+  };
 
   return (
     <div id="wd-assignments-editor" className="p-4">
-      <h2 className="mb-4">{assignment.title}</h2>
+        <h2 className="mb-4">
+        {orig ? "Edit Assignment" : "New Assignment"}
+        </h2>
+
 
       <Form>
-        {/* Assignment Name */}
+        {/* Name */}
         <Form.Group as={Row} controlId="wd-name" className="mb-3">
-          <Form.Label column sm={2}>
-            Assignment Name
-          </Form.Label>
+          <Form.Label column sm={2}>Assignment Name</Form.Label>
           <Col sm={10}>
-            <Form.Control type="text" defaultValue={assignment._id} />
+            <Form.Control
+              type="text"
+              value={form.title}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, title: e.target.value }))
+              }
+            />
           </Col>
         </Form.Group>
 
         {/* Description */}
         <Form.Group controlId="wd-description" className="mb-4">
           <Form.Label>Description</Form.Label>
-          <div className="border rounded p-3 bg-light">
-            <p>
-              The assignment is <span className="text-danger">available online</span>
-            </p>
-            <p>
-              Submit a link to the landing page of your Web application running on{" "}
-              <a href="https://www.netlify.com" target="_blank" rel="noreferrer">
-                Netlify
-              </a>.
-            </p>
-            <p>The landing page should include the following:</p>
-            <ul>
-              <li>Your full name and section</li>
-              <li>Links to each of the lab assignments</li>
-              <li>Link to the Kanbas application</li>
-              <li>Links to all relevant source code repositories</li>
-            </ul>
-            <p>
-              The Kanbas application should include a link to navigate back to the
-              landing page.
-            </p>
-          </div>
+          <Form.Control
+            as="textarea"
+            rows={3}
+            value={form.description}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, description: e.target.value }))
+            }
+          />
         </Form.Group>
 
         {/* Points */}
         <Row className="mb-4">
           <Form.Group as={Col} md={4} controlId="wd-points">
             <Form.Label>Points</Form.Label>
-            <Form.Control type="number" defaultValue={assignment.points} />
+            <Form.Control
+              type="number"
+              value={form.points}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, points: +e.target.value }))
+              }
+            />
           </Form.Group>
         </Row>
 
         {/* Assign Section */}
-        <Row className="mb-4">
-          <Form.Group as={Col} md={6}>
-            <div className="border rounded p-3">
-              <h5>Assign</h5>
-              <Form.Group className="mb-3">
-                <Form.Label>Assign to</Form.Label>
-                <Form.Control type="text" placeholder="Students" />
-              </Form.Group>
-              <Row className="mb-3">
-                <Col>
-                  <Form.Label>Due</Form.Label>
-                  <Form.Control type="datetime-local" defaultValue="2024-05-13T23:59" />
-                </Col>
-              </Row>
-              <Row>
-                <Col>
+        <Form.Group className="mb-4">
+          <Form.Label>Assign</Form.Label>
+          <div className="border rounded p-3">
+            {/* Due Date */}
+            <Form.Group controlId="wd-due" className="mb-3">
+              <Form.Label>Due</Form.Label>
+              <Form.Control
+                type="datetime-local"
+                value={form.dueDate}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, dueDate: e.target.value }))
+                }
+              />
+            </Form.Group>
+
+            {/* Available From / Until */}
+            <Row>
+              <Col>
+                <Form.Group controlId="wd-availableDate" className="mb-0">
                   <Form.Label>Available from</Form.Label>
-                  <Form.Control type="datetime-local" defaultValue="2024-05-06T00:00" />
-                </Col>
-                <Col>
+                  <Form.Control
+                    type="datetime-local"
+                    value={form.availableDate}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, availableDate: e.target.value }))
+                    }
+                  />
+                </Form.Group>
+              </Col>
+              <Col>
+                <Form.Group controlId="wd-untilDate" className="mb-0">
                   <Form.Label>Until</Form.Label>
-                  <Form.Control type="datetime-local" defaultValue="2024-06-01T00:00" />
-                </Col>
-              </Row>
-            </div>
-          </Form.Group>
-        </Row>
+                  <Form.Control
+                    type="datetime-local"
+                    value={form.dueDate}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, dueDate: e.target.value }))
+                    }
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          </div>
+        </Form.Group>
 
         <hr />
         <div className="d-flex justify-content-end mt-3">
-          <Link to={`/Kambaz/Courses/${courseId}/Assignments`} className="btn btn-outline-secondary me-2">
+          <Button
+            variant="outline-secondary"
+            className="me-2"
+            onClick={() =>
+              navigate(`/Kambaz/Courses/${courseId}/Assignments`)
+            }
+          >
             Cancel
-          </Link>
-          <Button variant="danger">Save</Button>
+          </Button>
+          <Button variant="danger" onClick={onSave}>
+            Save
+          </Button>
         </div>
       </Form>
     </div>

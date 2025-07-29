@@ -1,3 +1,8 @@
+// File: src/Kambaz/Labs/Lab3/index.tsx
+import { useSelector } from "react-redux";
+import type { RootState } from "../store";
+import { ListGroup } from "react-bootstrap";
+
 import VariablesAndConstants from "./VariablesAndConstants";
 import VariableTypes from "./VariableTypes";
 import BooleanVariables from "./BooleanVariables";
@@ -32,11 +37,23 @@ import Highlight from "./Highlight";
 import PathParameters from "./PathParameters";
 
 export default function Lab3() {
-  console.log("Hello World!"); // Log message to console
+  console.log("Hello World!");
+
+  const todos = useSelector((state: RootState) => state.todosReducer.todos);
 
   return (
     <div id="wd-lab3" className="container">
       <h3>Lab 3</h3>
+
+      {/* Shared todos from Redux */}
+      <ListGroup className="mb-4">
+        {todos.map((todo) => (
+          <ListGroup.Item key={todo.id}>
+            {todo.title}
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
+
       <Add a={3} b={4} />
       <h4>Square of 4</h4>
       <Square>4</Square>
@@ -46,6 +63,7 @@ export default function Lab3() {
         consectetur.
       </Highlight>
       <PathParameters />
+
       {/* Previous components */}
       <VariablesAndConstants />
       <VariableTypes />

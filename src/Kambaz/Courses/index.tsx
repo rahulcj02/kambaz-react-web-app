@@ -1,4 +1,4 @@
-// src/Kambaz/Courses/index.tsx
+// File: src/Kambaz/Courses/index.tsx
 import {
   Routes,
   Route,
@@ -9,7 +9,6 @@ import {
 import { FaAlignJustify } from "react-icons/fa";
 
 import CoursesNavigation from "./Navigation";
-import Home from "./Home";
 import Modules from "./Modules";
 import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editor";
@@ -18,9 +17,20 @@ import Piazza from "../Piazza";
 import Zoom from "../Zoom";
 import Quizzes from "../Quizzes";
 import CourseStatus from "./Home/Status";
-import courses from "../Database/courses.json"; // Make sure this file exists and is correct
+import Home from "./Home";
 
-export default function Courses() {
+interface Course {
+  _id: string;
+  name: string;
+  description: string;
+  
+}
+
+interface CoursesProps {
+  courses: Course[];
+}
+
+export default function Courses({ courses }: CoursesProps) {
   const { courseId } = useParams<{ courseId: string }>();
   const { pathname } = useLocation();
 
@@ -30,9 +40,9 @@ export default function Courses() {
   return (
     <div id="wd-courses" className="p-3">
       <h2 className="text-danger">
-        <FaAlignJustify className="me-4 fs-4 mb-1" />
-        {course ? course.name : `Course ${courseId}`} &gt; {currentSection}
-      </h2>
+  <FaAlignJustify className="me-4 fs-4 mb-1" />
+  {course ? course.name : `Course ${courseId}`} &gt; {currentSection}
+</h2>
       <hr />
 
       <div className="d-flex">
