@@ -1,23 +1,24 @@
 // src/Kambaz/Account/Signin.tsx
-import { useState } from "react";
+import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "./reducer";
-import { users } from "../Database";
+import * as client from "./client";
 
 export default function Signin() {
-  const [credentials, setCredentials] = useState({ loginId: "", password: "" });
+  const [credentials, setCredentials] = useState({
+    loginId: "",
+    password: "",
+  });
   const dispatch = useDispatch();
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
-  const signin = () => {
-    const user = (users as any[]).find(
-      (u) => u.loginId === credentials.loginId && u.password === credentials.password
-    );
+  const signin = async () => {
+    const user = await client.signin(credentials);
     if (user) {
       dispatch(setCurrentUser(user));
-      nav("/Kambaz/Dashboard");
+      navigate("/Kambaz/Dashboard");
     } else {
       alert("Invalid credentials");
     }
@@ -28,8 +29,8 @@ export default function Signin() {
       <h1>Sign in</h1>
       <Form.Group className="mb-2">
         <Form.Control
-          id="wd-username"
-          placeholder="username"
+          id="wd-loginid"
+          placeholder="loginId"
           value={credentials.loginId}
           onChange={(e) =>
             setCredentials({ ...credentials, loginId: e.target.value })

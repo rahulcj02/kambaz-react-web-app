@@ -1,21 +1,20 @@
 // File: src/Kambaz/Account/Profile.tsx
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../store";
 import { setCurrentUser } from "./reducer";
+import * as client from "./client";      
 
 export default function Profile() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // grab the signed-in user from Redux
   const currentUser = useSelector(
     (state: RootState) => state.account.currentUser
   );
 
-  // local copy for editing
   const [profile, setProfile] = useState({
     _id: "",
     loginId: "",
@@ -28,7 +27,6 @@ export default function Profile() {
     totalActivity: "",
   });
 
-  // on mount, ensure we're signed in, then seed form
   useEffect(() => {
     if (!currentUser) {
       navigate("/Kambaz/Account/Signin", { replace: true });
@@ -37,10 +35,15 @@ export default function Profile() {
     }
   }, [currentUser, navigate]);
 
-  // clear user and go back to signin
-  const signout = () => {
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     navigate("/Kambaz/Account/Signin", { replace: true });
+  };
+
+  const updateProfile = async () => {
+    const updated = await client.updateUser(profile);
+    dispatch(setCurrentUser(updated));
   };
 
   return (
@@ -126,28 +129,29 @@ export default function Profile() {
         {/* Last Activity (read-only) */}
         <Form.Group controlId="wd-last-activity" className="mb-2">
           <Form.Label>Last Activity</Form.Label>
-          <Form.Control
-            type="text"
-            value={profile.lastActivity}
-            readOnly
-          />
+          <Form.Control type="text" value={profile.lastActivity} readOnly />
         </Form.Group>
 
-        {/* Total Activity (read-only) */}
+        {}
         <Form.Group controlId="wd-total-activity" className="mb-4">
           <Form.Label>Total Activity</Form.Label>
-          <Form.Control
-            type="text"
-            value={profile.totalActivity}
-            readOnly
-          />
+          <Form.Control type="text" value={profile.totalActivity} readOnly />
         </Form.Group>
 
+        {}
+        <Button
+          id="wd-update-btn"
+          onClick={updateProfile}
+          className="btn btn-primary w-100 mb-2"
+        >
+          Update
+        </Button>
+
+        {}
         <Button
           id="wd-signout-btn"
-          variant="danger"
-          className="w-100"
           onClick={signout}
+          className="wd-signout-btn btn btn-danger w-100"
         >
           Sign Out
         </Button>

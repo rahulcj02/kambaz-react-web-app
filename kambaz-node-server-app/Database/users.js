@@ -1,0 +1,79 @@
+export default[
+  {
+    "_id": "123",
+    "firstName": "John",
+    "lastName": "Doe",
+    "loginId": "johndoe",
+    "password": "123",
+    "section": "RS101-A",
+    "role": "Student",
+    "lastActivity": "2024-05-10",
+    "totalActivity": "10 hours"
+  },
+  {
+    "_id": "234",
+    "firstName": "Alice",
+    "lastName": "Smith",
+    "loginId": "alicesmith",
+    "password": "123",
+    "section": "RS101-A",
+    "role": "Student",
+    "lastActivity": "2024-05-11",
+    "totalActivity": "8 hours"
+  },
+  {
+    "_id": "345",
+    "firstName": "Robert",
+    "lastName": "Brown",
+    "loginId": "robertbrown",
+    "password": "123",
+    "section": "RS101-B",
+    "role": "Instructor",
+    "lastActivity": "2024-05-12",
+    "totalActivity": "20 hours"
+  },
+  {
+    "_id": "456",
+    "firstName": "Emily",
+    "lastName": "Johnson",
+    "loginId": "emilyjohnson",
+    "password": "123",
+    "section": "RS101-A",
+    "role": "Student",
+    "lastActivity": "2024-05-11",
+    "totalActivity": "5 hours"
+  },
+  {
+    "_id": "567",
+    "firstName": "Michael",
+    "lastName": "Taylor",
+    "loginId": "michaeltaylor",
+    "password": "123",
+    "section": "RS101-B",
+    "role": "TA",
+    "lastActivity": "2024-05-12",
+    "totalActivity": "15 hours"
+  },
+  {
+    "_id": "789",
+    "firstName": "Laura",
+    "lastName": "Miller",
+    "loginId": "lauramiller",
+    "password": "123",
+    "section": "RS102-A",
+    "role": "Student",
+    "lastActivity": "2024-05-09",
+    "totalActivity": "7 hours"
+  },
+  {
+    "_id": "890",
+    "firstName": "David",
+    "lastName": "Wilson",
+    "loginId": "davidwilson",
+    "password": "123",
+    "section": "RS102-B",
+    "role": "Instructor",
+    "lastActivity": "2024-05-10",
+    "totalActivity": "25 hours"
+  }
+]

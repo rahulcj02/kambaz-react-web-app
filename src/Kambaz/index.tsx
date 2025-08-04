@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 import "./styles.css";
+import Session from "./Account/Session";
 import KambazNavigation from "./Navigation";
 import Account from "./Account";
 import Dashboard from "./Dashboard";
@@ -55,53 +56,53 @@ export default function Kambaz() {
   };
 
   return (
-    <div id="wd-kambaz">
-      <table>
-        <tbody>
-          <tr>
-            <td valign="top">
-              <KambazNavigation />
-            </td>
-            <td valign="top" className="wd-main-content-offset p-3">
-              <Routes>
-                <Route path="/" element={<Navigate to="Account" />} />
-                <Route path="Account/*" element={<Account />} />
+    <Session>                            {/* ← wrap your entire app */}
+      <div id="wd-kambaz">
+        <table>
+          <tbody>
+            <tr>
+              <td valign="top">
+                <KambazNavigation />
+              </td>
+              <td valign="top" className="wd-main-content-offset p-3">
+                <Routes>
+                  <Route path="/" element={<Navigate to="Account" />} />
+                  <Route path="Account/*" element={<Account />} />
 
-                {/* Dashboard only if signed in */}
-                <Route
-                  path="Dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard
-                        courses={courses}
-                        course={course}
-                        setCourse={setCourse}
-                        addNewCourse={addNewCourse}
-                        deleteCourse={deleteCourse}
-                        updateCourse={updateCourse}
-                      />
-                    </ProtectedRoute>
-                  }
-                />
+                  <Route
+                    path="Dashboard"
+                    element={
+                      <ProtectedRoute>
+                        <Dashboard
+                          courses={courses}
+                          course={course}
+                          setCourse={setCourse}
+                          addNewCourse={addNewCourse}
+                          deleteCourse={deleteCourse}
+                          updateCourse={updateCourse}
+                        />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                {/* Courses only if signed in */}
-                <Route
-                  path="Courses/:courseId/*"
-                  element={
-                    <ProtectedRoute>
-                      <Courses courses={courses} />
-                    </ProtectedRoute>
-                  }
-                />
+                  <Route
+                    path="Courses/:courseId/*"
+                    element={
+                      <ProtectedRoute>
+                        <Courses courses={courses} />
+                      </ProtectedRoute>
+                    }
+                  />
 
-                <Route path="Calendar" element={<Calendar />} />
-                <Route path="Inbox" element={<Inbox />} />
-                <Route path="Settings" element={<Settings />} />
-              </Routes>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+                  <Route path="Calendar" element={<Calendar />} />
+                  <Route path="Inbox" element={<Inbox />} />
+                  <Route path="Settings" element={<Settings />} />
+                </Routes>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </Session>
   );
 }

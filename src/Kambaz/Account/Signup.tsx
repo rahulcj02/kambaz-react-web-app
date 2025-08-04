@@ -1,79 +1,59 @@
-// File: src/Kambaz/Account/Signup.tsx
-import { useState } from "react";
+// src/Kambaz/Account/Signup.tsx
+import React, { useState } from "react";
+import { Form, Button } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import * as client from "./client";
 import { setCurrentUser } from "./reducer";
-import { useNavigate } from "react-router-dom";
-import { FormControl, Button } from "react-bootstrap";
-import type { User } from "./reducer";
 
 export default function Signup() {
-  const [form, setForm] = useState({
-    loginId: "",
-    password: "",
-    firstName: "",
-    lastName: "",
-    role: "Student",
-  });
+  const [user, setUser] = useState({ loginId: "", password: "" });
   const dispatch = useDispatch();
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
-  const onSignup = () => {
-    const newUser: User = {
-      _id: Date.now().toString(),
-      firstName: form.firstName,
-      lastName: form.lastName,
-      loginId: form.loginId,
-      password: form.password,
-      section: "",          
-      role: form.role,     
-      lastActivity: "",     
-      totalActivity: "",    
-    };
-
-    dispatch(setCurrentUser(newUser));
-    nav("/Kambaz/Dashboard");
+  const signupHandler = async () => {
+    try {
+      const currentUser = await client.signup(user);
+      dispatch(setCurrentUser(currentUser));
+      navigate("/Kambaz/Account/Profile");
+    } catch (err: any) {
+      // show the server’s error message (e.g. "LoginId already in use")
+      alert(err.response?.data?.message || "Error signing up");
+    }
   };
 
   return (
-    <div className="p-4 wd-main-content-offset" id="wd-signup-screen">
+    <div className="wd-signup-screen p-4 wd-main-content-offset">
       <h1>Sign up</h1>
-      <FormControl
-        id="wd-signup-loginId"
-        placeholder="Login ID"
-        className="mb-2"
-        value={form.loginId}
-        onChange={(e) => setForm({ ...form, loginId: e.target.value })}
-      />
-      <FormControl
-        id="wd-signup-password"
-        type="password"
-        placeholder="Password"
-        className="mb-2"
-        value={form.password}
-        onChange={(e) => setForm({ ...form, password: e.target.value })}
-      />
-      <FormControl
-        id="wd-signup-firstName"
-        placeholder="First Name"
-        className="mb-2"
-        value={form.firstName}
-        onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-      />
-      <FormControl
-        id="wd-signup-lastName"
-        placeholder="Last Name"
-        className="mb-2"
-        value={form.lastName}
-        onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-      />
-      <Button
-        id="wd-signup-btn"
-        onClick={onSignup}
-        className="w-100"
-        variant="primary"
-      >
+      <Form.Group className="mb-2">
+        <Form.Control
+          id="wd-loginid"
+          placeholder="loginId"
+          value={user.loginId}
+          onChange={(e) =>
+            setUser({ ...user, loginId: e.target.value })
+          }
+        />
+      </Form.Group>
+      <Form.Group className="mb-2">
+        <Form.Control
+          id="wd-password"
+          type="password"
+          placeholder="password"
+          value={user.password}
+          onChange={(e) =>
+            setUser({ ...user, password: e.target.value })
+          }
+        />
+      </Form.Group>
+      <Button id="wd-signup-btn" onClick={signupHandler} className="w-100">
         Sign up
       </Button>
+      <div className="mt-3">
+        <Link to="/Kambaz/Account/Signin" className="wd-signin-link">
+          Sign in
+        </Link>
+      </div>
     </div>
   );
 }

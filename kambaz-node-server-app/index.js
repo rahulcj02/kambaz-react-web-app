@@ -1,20 +1,43 @@
-// index.js
-import express               from "express";
-import cors                  from "cors";
-import Hello                 from "./Hello.js";
-import Lab5                  from "./Lab5/index.js";
-import PathParameters        from "./Lab5/PathParameters.js";
-import QueryParameters       from "./Lab5/QueryParameters.js";
-import WorkingWithObjects    from "./Lab5/WorkingWithObjects.js";
-import ModuleRoutes          from "./Lab5/Module.js";
-import WorkingWithArrays     from "./Lab5/WorkingWithArrays.js";
+// File: kambaz-node-server-app/index.js
+import "dotenv/config";            
+import express from "express";
+import cors from "cors";
+import session from "express-session";
+
+import Hello from "./Hello.js";
+import Lab5 from "./Lab5/index.js";
+import PathParameters from "./Lab5/PathParameters.js";
+import QueryParameters from "./Lab5/QueryParameters.js";
+import WorkingWithObjects from "./Lab5/WorkingWithObjects.js";
+import ModuleRoutes from "./Lab5/Module.js";
+import WorkingWithArrays from "./Lab5/WorkingWithArrays.js";
+import UserRoutes from "./Kambaz/Users/routes.js";
 
 const app = express();
 
-// CORS
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,                             // support cookies
+    origin: process.env.NETLIFY_URL || "http://localhost:5173",  
+  })
+);
 
-// JSON body parser
+const sessionOptions = {
+  secret: process.env.SESSION_SECRET || "any string",  
+  resave: false,               
+  saveUninitialized: false,    
+};
+if (process.env.NODE_ENV !== "development") {
+  // production tweaks
+  sessionOptions.proxy = true;
+  sessionOptions.cookie = {
+    sameSite: "none",
+    secure: true,
+    domain: process.env.NODE_SERVER_DOMAIN,
+  };
+}
+app.use(session(sessionOptions));
+
 app.use(express.json());
 
 Hello(app);
@@ -24,6 +47,7 @@ QueryParameters(app);
 WorkingWithObjects(app);
 ModuleRoutes(app);
 WorkingWithArrays(app);
+UserRoutes(app);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
