@@ -1,4 +1,3 @@
-// src/Kambaz/Account/client.ts
 import axios from "axios";
 
 const axiosWithCredentials = axios.create({ withCredentials: true });
@@ -28,5 +27,15 @@ export const profile = async () => {
 
 export const signout = async () => {
   const response = await axiosWithCredentials.post(`${USERS_API}/signout`);
+  return response.data;
+};
+
+export const findMyCourses = async () => {
+  const response = await axiosWithCredentials.get(`${USERS_API}/current/courses`);
+  return response.data;
+};
+
+export const createCourse = async (course: any) => {
+  const response = await axiosWithCredentials.post(`${USERS_API}/current/courses`, course);
   return response.data;
 };

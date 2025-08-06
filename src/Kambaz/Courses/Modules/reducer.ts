@@ -1,7 +1,5 @@
 // File: src/Kambaz/Courses/Modules/reducer.ts
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { modules as dbModules } from "../../Database";
 
 export interface ModuleType {
@@ -17,7 +15,6 @@ interface ModulesState {
 }
 
 const initialState: ModulesState = {
-  
   modules: dbModules as ModuleType[],
 };
 
@@ -25,10 +22,13 @@ const modulesSlice = createSlice({
   name: "modules",
   initialState,
   reducers: {
+    setModules(state, action: PayloadAction<ModuleType[]>) {
+      state.modules = action.payload;
+    },
     addModule(state, action: PayloadAction<{ course: string; name: string }>) {
       const { course, name } = action.payload;
       state.modules.push({
-        _id: uuidv4(),
+        _id: crypto.randomUUID(),
         course,
         name,
         lessons: [],
@@ -52,7 +52,6 @@ const modulesSlice = createSlice({
       );
     },
     finishEditModule(state, action: PayloadAction<ModuleType>) {
-      
       state.modules = state.modules.map((m) =>
         m._id === action.payload._id
           ? { ...action.payload, editing: false }
@@ -63,6 +62,7 @@ const modulesSlice = createSlice({
 });
 
 export const {
+  setModules,
   addModule,
   deleteModule,
   editModule,

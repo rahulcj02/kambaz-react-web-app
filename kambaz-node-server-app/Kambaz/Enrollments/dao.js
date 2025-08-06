@@ -1,0 +1,6 @@
+import { v4 as uuidv4 } from "uuid";
+import db from "../../Database/index.js";
+
+export function enrollUserInCourse(userId, courseId) {
+  db.enrollments.push({ _id: uuidv4(), user: userId, course: courseId });
+}

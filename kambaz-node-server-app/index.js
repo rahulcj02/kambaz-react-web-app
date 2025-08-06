@@ -12,6 +12,7 @@ import WorkingWithObjects from "./Lab5/WorkingWithObjects.js";
 import ModuleRoutes from "./Lab5/Module.js";
 import WorkingWithArrays from "./Lab5/WorkingWithArrays.js";
 import UserRoutes from "./Kambaz/Users/routes.js";
+import CourseRoutes from "./Kambaz/Courses/routes.js";
 
 const app = express();
 
@@ -48,6 +49,7 @@ WorkingWithObjects(app);
 ModuleRoutes(app);
 WorkingWithArrays(app);
 UserRoutes(app);
+CourseRoutes(app);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

@@ -1,8 +1,6 @@
 // File: src/Kambaz/index.tsx
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
-
 import "./styles.css";
 import Session from "./Account/Session";
 import KambazNavigation from "./Navigation";
@@ -13,13 +11,19 @@ import Calendar from "./Calendar";
 import Inbox from "./Inbox";
 import Settings from "./Settings";
 import ProtectedRoute from "./Account/ProtectedRoute";
-import * as db from "./Database";
+import { useSelector } from "react-redux";
+import * as courseClient from "./Courses/client";
 
 export default function Kambaz() {
-  
-  const [courses, setCourses] = useState<any[]>(db.courses);
+  const [courses, setCourses] = useState<any[]>([]);
+  const currentUser = useSelector((state: any) => state.account.currentUser);
 
-  
+  useEffect(() => {
+    if (currentUser) {
+      courseClient.findMyCourses().then(setCourses).catch(console.error);
+    }
+  }, [currentUser]);
+
   const initialCourse = {
     _id: "",
     name: "New Course",
@@ -29,34 +33,39 @@ export default function Kambaz() {
     image: "/images/NEU.jpg",
     description: "New Description",
   };
-
-  
   const [course, setCourse] = useState<any>(initialCourse);
 
-  // add handler
-  const addNewCourse = () => {
-    const newCourse = { ...course, _id: uuidv4() };
-    setCourses([...courses, newCourse]);
-    // reset form fully
-    setCourse(initialCourse);
+  const addNewCourse = async () => {
+    try {
+      const newCourse = await courseClient.createCourse(course);
+      setCourses([...courses, newCourse]);
+      setCourse(initialCourse);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  // delete handler
-  const deleteCourse = (courseId: string) => {
-    setCourses(courses.filter((c) => c._id !== courseId));
+  const deleteCourse = async (courseId: string) => {
+    try {
+      await courseClient.deleteCourse(courseId);
+      setCourses(courses.filter(c => c._id !== courseId));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
-  // update handler
-  const updateCourse = () => {
-    setCourses(
-      courses.map((c) => (c._id === course._id ? { ...course } : c))
-    );
-    // reset form fully
-    setCourse(initialCourse);
+  const updateCourse = async () => {
+    try {
+      const updated = await courseClient.updateCourse(course);
+      setCourses(courses.map(c => c._id === updated._id ? updated : c));
+      setCourse(initialCourse);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
-    <Session>                            {/* ← wrap your entire app */}
+    <Session>
       <div id="wd-kambaz">
         <table>
           <tbody>

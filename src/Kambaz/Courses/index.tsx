@@ -9,7 +9,7 @@ import {
 import { FaAlignJustify } from "react-icons/fa";
 
 import CoursesNavigation from "./Navigation";
-import Modules from "./Modules";
+import Modules from "./Modules/index";
 import Assignments from "./Assignments";
 import AssignmentEditor from "./Assignments/Editor";
 import PeopleTable from "../People/Table";
