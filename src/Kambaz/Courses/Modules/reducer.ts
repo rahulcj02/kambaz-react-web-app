@@ -69,4 +69,5 @@ export const {
   updateModule,
   finishEditModule,
 } = modulesSlice.actions;
+
 export default modulesSlice.reducer;

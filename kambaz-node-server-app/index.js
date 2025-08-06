@@ -13,7 +13,7 @@ import ModuleRoutes from "./Lab5/Module.js";
 import WorkingWithArrays from "./Lab5/WorkingWithArrays.js";
 import UserRoutes from "./Kambaz/Users/routes.js";
 import CourseRoutes from "./Kambaz/Courses/routes.js";
-
+import CourseModuleRoutes         from "./Kambaz/Courses/Modules/routes.js";
 const app = express();
 
 app.use(
@@ -50,7 +50,7 @@ ModuleRoutes(app);
 WorkingWithArrays(app);
 UserRoutes(app);
 CourseRoutes(app);
-
+CourseModuleRoutes(app);  
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);
