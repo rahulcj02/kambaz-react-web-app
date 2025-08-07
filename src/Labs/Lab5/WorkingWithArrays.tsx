@@ -1,11 +1,11 @@
 // src/Labs/Lab5/WorkingWithArrays.tsx
-import React, { useState } from "react";
-import { FormControl, FormCheck } from "react-bootstrap";
-
-const REMOTE_SERVER =
-  import.meta.env.VITE_REMOTE_SERVER ?? "http://localhost:4000";
+import React, { useState, useEffect } from "react";
+import { FormControl, FormCheck, Button, ListGroup } from "react-bootstrap";
+import * as client from "./client";
 
 export default function WorkingWithArrays() {
+  // 1) local state: full list + single-todo inputs
+  const [todos, setTodos] = useState<any[]>([]);
   const [todo, setTodo] = useState({
     id: "1",
     title: "",
@@ -13,152 +13,203 @@ export default function WorkingWithArrays() {
     completed: false,
   });
 
+  // 2) fetch entire list on mount
+  useEffect(() => {
+    client
+      .fetchTodos()
+      .then(setTodos)
+      .catch(console.error);
+  }, []);
+
   return (
     <div id="wd-working-with-arrays">
       <h3>Working with Arrays</h3>
 
-      {/* Retrieve all (and filter) */}
+      {/* Retrieve all */}
       <h4>Retrieving Arrays</h4>
-      <a
+      <Button
         id="wd-retrieve-todos"
-        className="btn btn-primary"
-        href={`${REMOTE_SERVER}/lab5/todos`}
+        className="mb-2"
+        onClick={() => client.fetchTodos().then(setTodos)}
       >
         Get Todos
-      </a>
+      </Button>
 
-      <h4>Filtering Array Items</h4>
-      <a
-        id="wd-retrieve-completed-todos"
-        className="btn btn-primary"
-        href={`${REMOTE_SERVER}/lab5/todos?completed=true`}
-      >
-        Get Completed Todos
-      </a>
+      <ListGroup className="mb-4">
+        {todos.map((t) => (
+          <ListGroup.Item key={t.id}>
+            <strong>#{t.id}</strong> – {t.title} [{t.completed ? "✓" : "✗"}]
+            <br />
+            {t.description}
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
 
       {/* Create */}
       <h4>Creating New Items in an Array</h4>
-      <a
-        id="wd-retrieve-completed-todos"
-        className="btn btn-primary"
-        href={`${REMOTE_SERVER}/lab5/todos/create`}
+      <FormControl
+        placeholder="Title"
+        className="mb-2"
+        value={todo.title}
+        onChange={(e) => setTodo((f) => ({ ...f, title: e.target.value }))}
+      />
+      <FormCheck
+        type="checkbox"
+        label="Completed?"
+        className="mb-2"
+        checked={todo.completed}
+        onChange={(e) =>
+          setTodo((f) => ({ ...f, completed: e.target.checked }))
+        }
+      />
+      <FormControl
+        placeholder="Description"
+        className="mb-2"
+        value={todo.description}
+        onChange={(e) =>
+          setTodo((f) => ({ ...f, description: e.target.value }))
+        }
+      />
+      <Button
+        id="wd-create-todo"
+        className="mb-4"
+        onClick={() =>
+          client
+            .postTodo({
+              title: todo.title,
+              completed: todo.completed,
+              description: todo.description,
+            })
+            .then((newTodo) => setTodos([...todos, newTodo]))
+            .catch(console.error)
+        }
       >
         Create Todo
-      </a>
-
-      {/* Retrieve by ID */}
-      <h4>Retrieving an Item from an Array by ID</h4>
-      <FormControl
-        id="wd-todo-id"
-        type="number"
-        className="w-25"
-        defaultValue={todo.id}
-        onChange={(e) => setTodo({ ...todo, id: e.target.value })}
-      />
-      <a
-        id="wd-todo-by-id"
-        className="btn btn-primary float-end"
-        href={`${REMOTE_SERVER}/lab5/todos/${todo.id}`}
-      >
-        Get Todo by ID
-      </a>
-      <hr />
+      </Button>
 
       {/* Delete */}
       <h4>Deleting from an Array</h4>
       <FormControl
-        id="wd-todo-delete-id"
         type="number"
-        className="w-25"
-        defaultValue={todo.id}
-        onChange={(e) => setTodo({ ...todo, id: e.target.value })}
+        className="w-25 mb-2"
+        value={todo.id}
+        onChange={(e) => setTodo((f) => ({ ...f, id: e.target.value }))}
       />
-      <a
+      <Button
         id="wd-delete-todo"
-        className="btn btn-primary float-end"
-        href={`${REMOTE_SERVER}/lab5/todos/${todo.id}/delete`}
+        className="mb-4 float-end"
+        onClick={() =>
+          client
+            .deleteTodo({ id: Number(todo.id) })
+            .then(() =>
+              setTodos(todos.filter((t) => t.id !== Number(todo.id)))
+            )
+            .catch(console.error)
+        }
       >
         Delete Todo with ID = {todo.id}
-      </a>
-      <hr />
+      </Button>
+      <div style={{ clear: "both" }} />
 
       {/* Update title */}
       <h4>Updating an Item in an Array</h4>
       <FormControl
-        id="wd-todo-id-update"
         type="number"
-        className="w-25 float-start me-2"
-        defaultValue={todo.id}
-        onChange={(e) => setTodo({ ...todo, id: e.target.value })}
+        className="w-25 float-start me-2 mb-2"
+        value={todo.id}
+        onChange={(e) => setTodo((f) => ({ ...f, id: e.target.value }))}
       />
       <FormControl
-        id="wd-todo-title"
         type="text"
-        className="w-50"
-        defaultValue={todo.title}
-        onChange={(e) => setTodo({ ...todo, title: e.target.value })}
+        className="w-50 float-start me-2 mb-2"
+        value={todo.title}
+        onChange={(e) => setTodo((f) => ({ ...f, title: e.target.value }))}
       />
-      <a
+      <Button
         id="wd-update-todo-title"
-        className="btn btn-primary float-end"
-        href={`${REMOTE_SERVER}/lab5/todos/${todo.id}/title/${todo.title}`}
+        className="mb-4 float-end"
+        onClick={() =>
+          client
+            .updateTodo({ id: Number(todo.id), title: todo.title })
+            .then((updated) =>
+              setTodos(
+                todos.map((t) => (t.id === updated.id ? updated : t))
+              )
+            )
+            .catch(console.error)
+        }
       >
         Update Todo
-      </a>
-      <hr />
+      </Button>
+      <div style={{ clear: "both" }} />
 
-      {/* On Your Own: completed & description */}
+      {/* Updating Completed */}
       <h4>Updating Completed</h4>
       <FormControl
-        id="wd-todo-id-complete"
         type="number"
-        className="w-25 float-start me-2"
-        defaultValue={todo.id}
-        onChange={(e) => setTodo({ ...todo, id: e.target.value })}
+        className="w-25 float-start me-2 mb-2"
+        value={todo.id}
+        onChange={(e) => setTodo((f) => ({ ...f, id: e.target.value }))}
       />
       <FormCheck
-        id="wd-todo-completed"
-        className="float-start me-2"
+        type="checkbox"
+        className="float-start me-2 mb-2"
         label="Completed?"
         checked={todo.completed}
         onChange={(e) =>
-          setTodo({ ...todo, completed: e.target.checked })
+          setTodo((f) => ({ ...f, completed: e.target.checked }))
         }
       />
-      <a
+      <Button
         id="wd-update-todo-completed"
-        className="btn btn-primary float-end"
-        href={`${REMOTE_SERVER}/lab5/todos/${todo.id}/completed/${todo.completed}`}
+        className="mb-4 float-end"
+        onClick={() =>
+          client
+            .updateTodo({ id: Number(todo.id), completed: todo.completed })
+            .then((updated) =>
+              setTodos(
+                todos.map((t) => (t.id === updated.id ? updated : t))
+              )
+            )
+            .catch(console.error)
+        }
       >
         Complete Todo ID = {todo.id}
-      </a>
-      <hr />
+      </Button>
+      <div style={{ clear: "both" }} />
 
+      {/* Updating Description */}
       <h4>Updating Description</h4>
       <FormControl
-        id="wd-todo-id-desc"
         type="number"
-        className="w-25 float-start me-2"
-        defaultValue={todo.id}
-        onChange={(e) => setTodo({ ...todo, id: e.target.value })}
+        className="w-25 float-start me-2 mb-2"
+        value={todo.id}
+        onChange={(e) => setTodo((f) => ({ ...f, id: e.target.value }))}
       />
       <FormControl
-        id="wd-todo-description"
         type="text"
-        className="w-50 float-start me-2"
-        defaultValue={todo.description}
+        className="w-50 float-start me-2 mb-2"
+        value={todo.description}
         onChange={(e) =>
-          setTodo({ ...todo, description: e.target.value })
+          setTodo((f) => ({ ...f, description: e.target.value }))
         }
       />
-      <a
+      <Button
         id="wd-update-todo-description"
-        className="btn btn-primary float-end"
-        href={`${REMOTE_SERVER}/lab5/todos/${todo.id}/description/${todo.description}`}
+        className="mb-4 float-end"
+        onClick={() =>
+          client
+            .updateTodo({ id: Number(todo.id), description: todo.description })
+            .then((updated) =>
+              setTodos(
+                todos.map((t) => (t.id === updated.id ? updated : t))
+              )
+            )
+            .catch(console.error)
+        }
       >
         Describe Todo ID = {todo.id}
-      </a>
-      <hr />
+      </Button>
     </div>
   );
 }
