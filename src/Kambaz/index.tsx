@@ -13,6 +13,7 @@ import Settings from "./Settings";
 import ProtectedRoute from "./Account/ProtectedRoute";
 import { useSelector } from "react-redux";
 import * as courseClient from "./Courses/client";
+import Enrollments from "./Enrollments";
 
 export default function Kambaz() {
   const [courses, setCourses] = useState<any[]>([]);
@@ -106,6 +107,14 @@ export default function Kambaz() {
                   <Route path="Calendar" element={<Calendar />} />
                   <Route path="Inbox" element={<Inbox />} />
                   <Route path="Settings" element={<Settings />} />
+                  <Route
+                      path="Courses/:courseId/Enrollments"
+                      element={
+                        <ProtectedRoute>
+                          <Enrollments />
+                        </ProtectedRoute>
+                      }
+                    />
                 </Routes>
               </td>
             </tr>

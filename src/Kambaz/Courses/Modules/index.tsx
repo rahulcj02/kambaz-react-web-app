@@ -36,7 +36,7 @@ export default function Modules() {
       name: moduleName,
       course: courseId,
     });
-    dispatch(addModule({ course: courseId, name: newMod.name }));
+    dispatch(setModules([...modules, newMod]));
     setModuleName("");
   };
 

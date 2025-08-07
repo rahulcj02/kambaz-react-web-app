@@ -1,13 +1,22 @@
 // File: src/Kambaz/Courses/Assignments/Editor.tsx
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store";
-import { addAssignment, updateAssignment, type Assignment } from "./reducer";
+import {
+  addAssignment,
+  updateAssignment,
+  type Assignment,
+} from "./reducer";
+// ← NEW: import your assignment client
+import * as client from "./client";
 
 export default function AssignmentEditor() {
-  const { courseId, aid } = useParams<{ courseId: string; aid: string }>();
+  const { courseId, aid } = useParams<{
+    courseId: string;
+    aid: string;
+  }>();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -17,9 +26,12 @@ export default function AssignmentEditor() {
   const currentUser = useSelector((s: RootState) => s.account.currentUser);
   const isFaculty =
     currentUser?.role === "Instructor" || currentUser?.role === "Admin";
+
   useEffect(() => {
     if (!isFaculty) {
-      navigate(`/Kambaz/Courses/${courseId}/Assignments`, { replace: true });
+      navigate(`/Kambaz/Courses/${courseId}/Assignments`, {
+        replace: true,
+      });
     }
   }, [isFaculty, courseId, navigate]);
 
@@ -28,36 +40,57 @@ export default function AssignmentEditor() {
   }
 
   const [form, setForm] = useState<Assignment>({
-    _id:            orig?._id            || "New",
-    course:         orig?.course         || courseId!,
-    title:          orig?.title          || "",
-    description:    orig?.description    || "",
-    points:         orig?.points         || 0,
-    dueDate:        orig?.dueDate        || "",
-    availableDate:  orig?.availableDate  || "",
+    _id: orig?._id || "New",
+    course: orig?.course || courseId!,
+    title: orig?.title || "",
+    description: orig?.description || "",
+    points: orig?.points || 0,
+    dueDate: orig?.dueDate || "",
+    availableDate: orig?.availableDate || "",
   });
-  
 
-  const onSave = () => {
-    if (aid === "New") {
-      dispatch(addAssignment(form));
-    } else {
-      dispatch(updateAssignment(form));
+  // ← FIXED: call server then dispatch exactly what the reducer expects
+  const onSave = async () => {
+    try {
+      if (aid === "New") {
+         // strip out _id so server cannot override the generated UUID
+         const { _id, ...payload } = form;
+         const created = await client.createAssignment(payload);
+         dispatch(
+           addAssignment({
+             course:        created.course,
+             title:         created.title,
+             description:   created.description,
+             points:        created.points,
+             dueDate:       created.dueDate,
+             availableDate: created.availableDate,
+           })
+         );
+       } else {
+        // 1) persist update
+        const updated = await client.updateAssignmentClient(form);
+        // 2) dispatch full assignment to replace existing
+        dispatch(updateAssignment(updated));
+      }
+      // 3) navigate back
+      navigate(`/Kambaz/Courses/${courseId}/Assignments`, {
+        replace: true,
+      });
+    } catch (e) {
+      console.error("Assignment save failed", e);
     }
-    navigate(`/Kambaz/Courses/${courseId}/Assignments`);
   };
 
   return (
     <div id="wd-assignments-editor" className="p-4">
-        <h2 className="mb-4">
-        {orig ? "Edit Assignment" : "New Assignment"}
-        </h2>
-
+      <h2 className="mb-4">{orig ? "Edit Assignment" : "New Assignment"}</h2>
 
       <Form>
         {/* Name */}
         <Form.Group as={Row} controlId="wd-name" className="mb-3">
-          <Form.Label column sm={2}>Assignment Name</Form.Label>
+          <Form.Label column sm={2}>
+            Assignment Name
+          </Form.Label>
           <Col sm={10}>
             <Form.Control
               type="text"
@@ -121,7 +154,10 @@ export default function AssignmentEditor() {
                     type="datetime-local"
                     value={form.availableDate}
                     onChange={(e) =>
-                      setForm((f) => ({ ...f, availableDate: e.target.value }))
+                      setForm((f) => ({
+                        ...f,
+                        availableDate: e.target.value,
+                      }))
                     }
                   />
                 </Form.Group>
@@ -148,7 +184,9 @@ export default function AssignmentEditor() {
             variant="outline-secondary"
             className="me-2"
             onClick={() =>
-              navigate(`/Kambaz/Courses/${courseId}/Assignments`)
+              navigate(`/Kambaz/Courses/${courseId}/Assignments`, {
+                replace: true,
+              })
             }
           >
             Cancel

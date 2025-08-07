@@ -14,6 +14,8 @@ import WorkingWithArrays from "./Lab5/WorkingWithArrays.js";
 import UserRoutes from "./Kambaz/Users/routes.js";
 import CourseRoutes from "./Kambaz/Courses/routes.js";
 import CourseModuleRoutes         from "./Kambaz/Courses/Modules/routes.js";
+import AssignmentRoutes from "./Kambaz/Assignments/routes.js";
+import EnrollmentRoutes from "./Kambaz/Enrollments/routes.js";
 const app = express();
 
 app.use(
@@ -48,9 +50,11 @@ QueryParameters(app);
 WorkingWithObjects(app);
 ModuleRoutes(app);
 WorkingWithArrays(app);
+AssignmentRoutes(app);
 UserRoutes(app);
 CourseRoutes(app);
-CourseModuleRoutes(app);  
+CourseModuleRoutes(app); 
+EnrollmentRoutes(app); 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);

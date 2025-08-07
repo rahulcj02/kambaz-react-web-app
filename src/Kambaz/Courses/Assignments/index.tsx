@@ -1,4 +1,4 @@
-// File: src/Kambaz/Courses/Assignments/index.tsx
+import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store";
@@ -20,27 +20,44 @@ import {
   FormControl,
 } from "react-bootstrap";
 import "../../styles.css";
-import { deleteAssignment } from "./reducer";
+
+// **Changed imports**: bring in setAssignments and client
+import { setAssignments, deleteAssignment } from "./reducer";
+import * as client from "./client";
 
 export default function Assignments() {
   const { courseId } = useParams<{ courseId: string }>();
   const dispatch = useDispatch();
+
+  // pull all assignments from Redux
   const allAssignments = useSelector(
     (s: RootState) => s.assignments.assignments
   );
   const courseAssignments = allAssignments.filter(
     (a) => a.course === courseId
   );
+
   const currentUser = useSelector(
     (s: RootState) => s.account.currentUser
   );
   const isFaculty =
     currentUser?.role === "Instructor" || currentUser?.role === "Admin";
 
-  const onDelete = (aid: string) => {
-    if (window.confirm("Are you sure you want to delete this assignment?")) {
-      dispatch(deleteAssignment(aid));
-    }
+  // *** NEW useEffect to fetch from server on mount / courseId change ***
+  useEffect(() => {
+    if (!courseId) return;
+    client
+      .fetchAssignments(courseId)
+      .then((data) => dispatch(setAssignments(data)))
+      .catch(console.error);
+  }, [courseId, dispatch]);
+
+  // *** UPDATED onDelete to call server then Redux ***
+  const onDelete = async (aid: string) => {
+    if (!window.confirm("Are you sure you want to delete this assignment?"))
+      return;
+    await client.deleteAssignmentClient(aid);
+    dispatch(deleteAssignment(aid));
   };
 
   return (
@@ -114,41 +131,38 @@ export default function Assignments() {
                       Available {a.availableDate}
                     </span>{" "}
                     |{" "}
-                    <span className="text-secondary">
-                      Due {a.dueDate}
-                    </span>{" "}
-                    |{" "}
+                    <span className="text-secondary">Due {a.dueDate}</span> |{" "}
                     <span className="text-secondary">{a.points} pts</span>
                   </div>
                 </div>
                 <FaCheckCircle className="fs-4 text-success me-3" />
+
                 {isFaculty && (
-  <>
-    {/* Edit button */}
-    <Link to={`/Kambaz/Courses/${courseId}/Assignments/${a._id}`}>
-      <Button
-        variant="link"
-        className="text-warning p-0 me-3"
-        aria-label="Edit assignment"
-      >
-        <FaEdit />
-      </Button>
-    </Link>
+                  <>
+                    {/* Edit button */}
+                    <Link to={`/Kambaz/Courses/${courseId}/Assignments/${a._id}`}>
+                      <Button
+                        variant="link"
+                        className="text-warning p-0 me-3"
+                        aria-label="Edit assignment"
+                      >
+                        <FaEdit />
+                      </Button>
+                    </Link>
 
-    {/* Delete button */}
-    <Button
-      variant="link"
-      className="text-danger p-0 me-3"
-      aria-label="Delete assignment"
-      onClick={() => onDelete(a._id)}
-    >
-      <FaTrashAlt />
-    </Button>
+                    {/* Delete button */}
+                    <Button
+                      variant="link"
+                      className="text-danger p-0 me-3"
+                      aria-label="Delete assignment"
+                      onClick={() => onDelete(a._id)}
+                    >
+                      <FaTrashAlt />
+                    </Button>
 
-    <BsThreeDotsVertical className="text-secondary" />
-  </>
-)}
-
+                    <BsThreeDotsVertical className="text-secondary" />
+                  </>
+                )}
               </Card.Body>
             </Card>
           </Col>

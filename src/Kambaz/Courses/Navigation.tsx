@@ -14,6 +14,7 @@ export default function CourseNavigation() {
     "Quizzes",
     "Grades",
     "People",
+    "Enrollments",
   ];
 
   return (
