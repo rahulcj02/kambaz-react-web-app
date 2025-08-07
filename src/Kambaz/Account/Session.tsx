@@ -1,5 +1,5 @@
 // File: src/Kambaz/Account/Session.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import * as client from "./client";
 import { setCurrentUser } from "./reducer";
 import { useDispatch } from "react-redux";

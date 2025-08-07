@@ -1,5 +1,5 @@
 // File: src/Kambaz/Account/Profile.tsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";

@@ -1,5 +1,4 @@
 // src/Labs/Lab5/EnvironmentVariables.tsx
-import React from "react";
 
 const REMOTE_SERVER =
   import.meta.env.VITE_REMOTE_SERVER ?? "http://localhost:4000";

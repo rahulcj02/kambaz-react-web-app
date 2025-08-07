@@ -1,5 +1,5 @@
 // src/Labs/Lab5/WorkingWithArrays.tsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FormControl, FormCheck, Button, ListGroup } from "react-bootstrap";
 import * as client from "./client";
 

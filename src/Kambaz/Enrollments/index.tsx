@@ -1,5 +1,5 @@
 // src/Kambaz/Enrollments/index.tsx
-import React, { useEffect, useState }         from "react";
+import { useEffect, useState }         from "react";
 import { useSelector, useDispatch }           from "react-redux";
 import { useParams }                           from "react-router-dom";
 import {
@@ -22,7 +22,7 @@ import type { Enrollment } from "./reducer";
 
 export default function Enrollments() {
   const dispatch    = useDispatch();
-  const { courseId } = useParams<{ courseId: string }>();
+  useParams<{ courseId: string; }>();
 
   const currentUser = useSelector((s: RootState) => s.account.currentUser)!;
   const enrolls     = useSelector((s: RootState) => s.enrollments.enrollments);

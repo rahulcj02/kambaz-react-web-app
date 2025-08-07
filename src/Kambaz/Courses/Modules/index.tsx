@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ListGroup, FormControl } from "react-bootstrap";
 import ModulesControls from "./ModulesControls";
@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../../store";
 import {
   setModules,
-  addModule,
   deleteModule as deleteModuleAction,
   updateModule as updateModuleAction,
 } from "./reducer";

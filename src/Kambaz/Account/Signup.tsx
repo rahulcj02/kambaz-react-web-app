@@ -1,5 +1,5 @@
 // src/Kambaz/Account/Signup.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";

@@ -1,5 +1,5 @@
 // src/Labs/Lab5/HttpClient.tsx
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;

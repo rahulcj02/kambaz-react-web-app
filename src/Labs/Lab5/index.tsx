@@ -1,5 +1,4 @@
 // src/Labs/Lab5/index.tsx
-import React from "react";
 import EnvironmentVariables             from "./EnvironmentVariables";
 import PathParameters                   from "./PathParameters";
 import QueryParameters                  from "./QueryParameters";
