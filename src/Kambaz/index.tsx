@@ -107,6 +107,7 @@ export default function Kambaz() {
                   <Route path="Calendar" element={<Calendar />} />
                   <Route path="Inbox" element={<Inbox />} />
                   <Route path="Settings" element={<Settings />} />
+                  <Route path="Enrollments" element={<Enrollments />} />
                   <Route
                       path="Courses/:courseId/Enrollments"
                       element={

@@ -1,9 +1,13 @@
 // src/Kambaz/Courses/Navigation.tsx
 import { NavLink, useParams } from "react-router-dom";
+import { useSelector }            from "react-redux";
+import type { RootState }         from "../store";
 import "../styles.css";
 
 export default function CourseNavigation() {
   const { courseId } = useParams<{ courseId: string }>();
+  const currentUser = useSelector((s: RootState) => s.account.currentUser);
+  const isStudent   = currentUser?.role === "Student";
 
   const links = [
     "Home",
@@ -14,9 +18,11 @@ export default function CourseNavigation() {
     "Quizzes",
     "Grades",
     "People",
-    "Enrollments",
   ];
-
+// Students get the extra tab
+  if (isStudent) {
+    links.push("Enrollments");
+  }
   return (
     <div id="wd-courses-navigation">
       <div className="wd list-group fs-5 rounded-0">
