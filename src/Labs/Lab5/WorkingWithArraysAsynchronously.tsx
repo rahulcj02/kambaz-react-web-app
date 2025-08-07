@@ -1,5 +1,5 @@
 // src/Labs/Lab5/WorkingWithArraysAsynchronously.tsx
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import * as client from "./client";
 import { ListGroup, FormControl } from "react-bootstrap";
 import { FaTrash, FaRegTimesCircle, FaPlusCircle, FaPencilAlt as FaPencil } from "react-icons/fa";
