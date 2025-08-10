@@ -1,18 +1,29 @@
-import { useParams } from "react-router-dom";
-import { users, enrollments } from "../Database";
+// File: src/Kambaz/People/Table.tsx
+import React from "react";
+import { Link } from "react-router-dom";
+import PeopleDetails from "./Details";
 
-export default function PeopleTable() {
-  const { courseId } = useParams<{ courseId: string }>();
+type User = {
+  _id: string;
+  firstName?: string;
+  lastName?: string;
+  loginId?: string;
+  section?: string;
+  role?: string;
+  lastActivity?: string | Date;
+  totalActivity?: string;
+};
 
-  const filteredUsers = users.filter((usr: any) =>
-    enrollments.some(
-      (enrollment: any) =>
-        enrollment.user === usr._id && enrollment.course === courseId
-    )
-  );
-
+export default function PeopleTable({
+  users = [],
+  refresh,
+}: {
+  users?: User[];
+  refresh?: () => void;
+}) {
   return (
     <div id="wd-people-table" className="p-3">
+      <PeopleDetails refresh={refresh} />
       <h2 className="text-danger">People</h2>
       <table className="table table-bordered table-hover">
         <thead>
@@ -26,16 +37,21 @@ export default function PeopleTable() {
           </tr>
         </thead>
         <tbody>
-          {filteredUsers.map((user: any) => (
+          {users.map((user: User) => (
             <tr key={user._id}>
               <td className="wd-full-name text-nowrap">
-                <span className="wd-first-name">{user.firstName}</span>{" "}
-                <span className="wd-last-name">{user.lastName}</span>
+                <Link
+                  to={`/Kambaz/Account/Users/${user._id}`}
+                  className="text-decoration-none"
+                >
+                  <span className="wd-first-name">{user.firstName}</span>{" "}
+                  <span className="wd-last-name">{user.lastName}</span>
+                </Link>
               </td>
               <td className="wd-login-id">{user.loginId}</td>
               <td className="wd-section">{user.section}</td>
               <td className="wd-role">{user.role}</td>
-              <td className="wd-last-activity">{user.lastActivity}</td>
+              <td className="wd-last-activity">{String(user.lastActivity ?? "")}</td>
               <td className="wd-total-activity">{user.totalActivity}</td>
             </tr>
           ))}

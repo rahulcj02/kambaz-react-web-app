@@ -1,34 +1,40 @@
 // kambaz-node-server-app/Kambaz/Users/dao.js
-import db from "../../Database/index.js";
 import { v4 as uuidv4 } from "uuid";
-
-let { users } = db;
+import model from "./model.js";
 
 export const createUser = (user) => {
-  const newUser = { ...user, _id: uuidv4() };
-  users = [...users, newUser];
-  return newUser;
+  if (!user._id) user._id = uuidv4();
+  return model.create(user);
 };
 
-export const findAllUsers = () => users;
-
-export const findUserById = (userId) =>
-  users.find((u) => u._id === userId);
-
-export const findUserByLoginId = (loginId) =>
-  users.find((u) => u.loginId === loginId);
-
+export const findAllUsers = () => model.find();
+export const findUserById = (userId) => model.findById(userId);
+export const findUserByLoginId = (loginId) => model.findOne({ loginId });
 export const findUserByCredentials = (loginId, password) =>
-  users.find((u) => u.loginId === loginId && u.password === password);
+  model.findOne({ loginId, password });
 
-export const updateUser = (userId, user) => {
-  users = users.map((u) =>
-    u._id === userId ? { ...user, _id: userId } : u
-  );
-  return users.find((u) => u._id === userId);
+export const updateUser = (userId, user) =>
+  model.updateOne({ _id: userId }, { $set: user });
+
+export const deleteUser = (userId) => model.deleteOne({ _id: userId });
+
+export const findUsersByRole = (role) => model.find({ role });
+
+export const findUsersByPartialName = (partialName) => {
+  const regex = new RegExp(partialName, "i");
+  return model.find({
+    $or: [{ firstName: { $regex: regex } }, { lastName: { $regex: regex } }],
+  });
 };
 
-export const deleteUser = (userId) => {
-  users = users.filter((u) => u._id !== userId);
+export default {
+  createUser,
+  findAllUsers,
+  findUserById,
+  findUserByLoginId,
+  findUserByCredentials,
+  updateUser,
+  deleteUser,
+  findUsersByRole,
+  findUsersByPartialName,
 };
-

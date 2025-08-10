@@ -1,39 +1,53 @@
+// File: kambaz-node-server-app/Kambaz/Users/routes.js
 import * as dao from "./dao.js";
 import * as courseDao from "../Courses/dao.js";
 import * as enrollmentsDao from "../Enrollments/dao.js";
 
 export default function UserRoutes(app) {
-  const createUser = (req, res) => {
-    const user = dao.createUser(req.body);
+  const createUser = async (req, res) => {
+    const user = await dao.createUser(req.body);
     res.json(user);
   };
 
-  const findAllUsers = (req, res) => {
-    res.json(dao.findAllUsers());
+  const findAllUsers = async (req, res) => {
+    const { role, name } = req.query;
+    if (role) {
+      const users = await dao.findUsersByRole(String(role));
+      res.json(users);
+      return;
+    }
+    if (name) {
+      const users = await dao.findUsersByPartialName(String(name));
+      res.json(users);
+      return;
+    }
+    const users = await dao.findAllUsers();
+    res.json(users);
   };
 
-  const findUserById = (req, res) => {
-    res.json(dao.findUserById(req.params.userId));
+  const findUserById = async (req, res) => {
+    const user = await dao.findUserById(req.params.userId);
+    res.json(user);
   };
 
-  const deleteUser = (req, res) => {
-    dao.deleteUser(req.params.userId);
-    res.sendStatus(204);
+  const deleteUser = async (req, res) => {
+    const status = await dao.deleteUser(req.params.userId);
+    res.json(status);
   };
 
-  const signup = (req, res) => {
-    const existing = dao.findUserByLoginId(req.body.loginId);
+  const signup = async (req, res) => {
+    const existing = await dao.findUserByLoginId(req.body.loginId);
     if (existing) {
       return res.status(400).json({ message: "LoginId already in use" });
     }
-    const currentUser = dao.createUser(req.body);
+    const currentUser = await dao.createUser(req.body);
     req.session.currentUser = currentUser;
     res.json(currentUser);
   };
 
-  const signin = (req, res) => {
+  const signin = async (req, res) => {
     const { loginId, password } = req.body;
-    const currentUser = dao.findUserByCredentials(loginId, password);
+    const currentUser = await dao.findUserByCredentials(loginId, password);
     if (currentUser) {
       req.session.currentUser = currentUser;
       return res.json(currentUser);
@@ -54,28 +68,28 @@ export default function UserRoutes(app) {
     res.json(currentUser);
   };
 
-  const updateUser = (req, res) => {
+  const updateUser = async (req, res) => {
     const userId = req.params.userId;
-    dao.updateUser(userId, req.body);
-    const currentUser = dao.findUserById(userId);
+    await dao.updateUser(userId, req.body);
+    const currentUser = await dao.findUserById(userId);
     req.session.currentUser = currentUser;
     res.json(currentUser);
   };
 
   const findCoursesForEnrolledUser = (req, res) => {
-  let userId = req.params.userId;
-  if (userId === "current") {
-    const cu = req.session.currentUser;
-    if (!cu) {
-      return res.sendStatus(401);
+    let userId = req.params.userId;
+    if (userId === "current") {
+      const cu = req.session.currentUser;
+      if (!cu) {
+        return res.sendStatus(401);
+      }
+      userId = cu._id;
     }
-    userId = cu._id;
-  }
-  const courses = courseDao.findCoursesForEnrolledUser(userId);
-  res.json(courses);
-};
+    const courses = courseDao.findCoursesForEnrolledUser(userId);
+    res.json(courses);
+  };
 
-const createCourseForCurrent = (req, res) => {
+  const createCourseForCurrent = (req, res) => {
     const cu = req.session.currentUser;
     const newCourse = courseDao.createCourse(req.body);
     enrollmentsDao.enrollUserInCourse(cu._id, newCourse._id);
