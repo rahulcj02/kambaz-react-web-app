@@ -70,10 +70,14 @@ export default function UserRoutes(app) {
 
   const updateUser = async (req, res) => {
     const userId = req.params.userId;
-    await dao.updateUser(userId, req.body);
-    const currentUser = await dao.findUserById(userId);
-    req.session.currentUser = currentUser;
-    res.json(currentUser);
+    const userUpdates = req.body;
+    await dao.updateUser(userId, userUpdates);
+    const sessionUser = req.session.currentUser;
+    if (sessionUser && sessionUser._id === userId) {
+      req.session.currentUser = { ...sessionUser, ...userUpdates };
+    }
+    const updatedUser = await dao.findUserById(userId);
+    res.json(updatedUser);
   };
 
   const findCoursesForEnrolledUser = (req, res) => {
