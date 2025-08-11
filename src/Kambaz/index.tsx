@@ -11,19 +11,15 @@ import Calendar from "./Calendar";
 import Inbox from "./Inbox";
 import Settings from "./Settings";
 import ProtectedRoute from "./Account/ProtectedRoute";
-import { useSelector } from "react-redux";
 import * as courseClient from "./Courses/client";
 import Enrollments from "./Enrollments";
 
 export default function Kambaz() {
   const [courses, setCourses] = useState<any[]>([]);
-  const currentUser = useSelector((state: any) => state.account.currentUser);
 
   useEffect(() => {
-    if (currentUser) {
-      courseClient.findMyCourses().then(setCourses).catch(console.error);
-    }
-  }, [currentUser]);
+    courseClient.fetchAllCourses().then(setCourses).catch(console.error);
+  }, []);
 
   const initialCourse = {
     _id: "",
@@ -49,7 +45,7 @@ export default function Kambaz() {
   const deleteCourse = async (courseId: string) => {
     try {
       await courseClient.deleteCourse(courseId);
-      setCourses(courses.filter(c => c._id !== courseId));
+      setCourses(courses.filter((c) => c._id !== courseId));
     } catch (e) {
       console.error(e);
     }
@@ -57,8 +53,8 @@ export default function Kambaz() {
 
   const updateCourse = async () => {
     try {
-      const updated = await courseClient.updateCourse(course);
-      setCourses(courses.map(c => c._id === updated._id ? updated : c));
+      await courseClient.updateCourse(course);
+      setCourses(courses.map((c) => (c._id === course._id ? { ...c, ...course } : c)));
       setCourse(initialCourse);
     } catch (e) {
       console.error(e);
@@ -78,7 +74,6 @@ export default function Kambaz() {
                 <Routes>
                   <Route path="/" element={<Navigate to="Account" />} />
                   <Route path="Account/*" element={<Account />} />
-
                   <Route
                     path="Dashboard"
                     element={
@@ -94,7 +89,6 @@ export default function Kambaz() {
                       </ProtectedRoute>
                     }
                   />
-
                   <Route
                     path="Courses/:courseId/*"
                     element={
@@ -103,19 +97,18 @@ export default function Kambaz() {
                       </ProtectedRoute>
                     }
                   />
-
                   <Route path="Calendar" element={<Calendar />} />
                   <Route path="Inbox" element={<Inbox />} />
                   <Route path="Settings" element={<Settings />} />
                   <Route path="Enrollments" element={<Enrollments />} />
                   <Route
-                      path="Courses/:courseId/Enrollments"
-                      element={
-                        <ProtectedRoute>
-                          <Enrollments />
-                        </ProtectedRoute>
-                      }
-                    />
+                    path="Courses/:courseId/Enrollments"
+                    element={
+                      <ProtectedRoute>
+                        <Enrollments />
+                      </ProtectedRoute>
+                    }
+                  />
                 </Routes>
               </td>
             </tr>

@@ -1,7 +1,7 @@
-// CHANGE: New Modules DAO
-import db from "../../Database/index.js";
+// File: kambaz-node-server-app/Kambaz/Modules/dao.js
+import model from "./model.js";
 
-export function findModulesForCourse(courseId) {
-  const { modules } = db;
-  return modules.filter(m => m.course === courseId);
-}
+export const findModulesForCourse = (courseId) =>
+  model.find({ course: courseId });
+
+export default { findModulesForCourse };

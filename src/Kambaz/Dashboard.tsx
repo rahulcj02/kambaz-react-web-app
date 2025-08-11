@@ -39,7 +39,7 @@ export default function Dashboard({
     e.currentTarget.src = "/images/NEU.jpg";
   };
 
-  const visible = isFaculty ? courses : courses;
+  const visible = courses;
 
   return (
     <div id="wd-dashboard" className="p-4" style={{ marginLeft: 110 }}>
