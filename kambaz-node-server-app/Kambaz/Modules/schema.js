@@ -1,4 +1,4 @@
-// File: kambaz-node-server-app/Kambaz/Modules/schema.js
+// kambaz-node-server-app/Kambaz/Modules/schema.js
 import mongoose from "mongoose";
 
 const schema = new mongoose.Schema(

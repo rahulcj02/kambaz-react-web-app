@@ -41,3 +41,26 @@ export const findModulesForCourse = async (courseId: string) => {
   );
   return data;
 };
+
+export const createModuleForCourse = async (courseId: string, module: any) => {
+  const { data } = await axiosWithCredentials.post(
+    `${COURSES_API}/${courseId}/modules`,
+    module
+  );
+  return data;
+};
+
+export const deleteModule = async (moduleId: string) => {
+  const { data } = await axiosWithCredentials.delete(
+    `${REMOTE_SERVER}/api/modules/${moduleId}`
+  );
+  return data;
+};
+
+export const updateModule = async (module: any) => {
+  const { data } = await axiosWithCredentials.put(
+    `${REMOTE_SERVER}/api/modules/${module._id}`,
+    module
+  );
+  return data;
+};
