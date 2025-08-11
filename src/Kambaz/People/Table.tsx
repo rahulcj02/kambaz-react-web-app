@@ -1,5 +1,4 @@
 // File: src/Kambaz/People/Table.tsx
-import React from "react";
 import { Link } from "react-router-dom";
 import PeopleDetails from "./Details";
 

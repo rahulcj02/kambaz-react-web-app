@@ -1,5 +1,6 @@
 // File: src/Kambaz/Account/Users.tsx
 import { useEffect, useState } from "react";
+import { FaPlus } from "react-icons/fa6";
 import PeopleTable from "../People/Table";
 import * as client from "./client";
 
@@ -33,13 +34,34 @@ export default function Users() {
     }
   };
 
+  const addUser = async () => {
+    const user = await client.createUser({
+      firstName: "New",
+      lastName: `User${users.length + 1}`,
+      loginId: `newuser${Date.now()}`,
+      password: "password123",
+      section: "S101",
+      role: "Student",
+      totalActivity: "0 hours",
+      lastActivity: new Date().toISOString().slice(0, 10),
+    });
+    setUsers([...users, user]);
+  };
+
   useEffect(() => {
     fetchUsers();
   }, []);
 
   return (
     <div className="p-3">
-      <h3>Users</h3>
+      <h3 className="mb-3">
+        Users
+        <button onClick={addUser} className="btn btn-danger float-end wd-add-people">
+          <FaPlus className="me-2" />
+          People
+        </button>
+      </h3>
+
       <div className="d-flex gap-2 mb-3">
         <input
           value={name}
@@ -60,6 +82,7 @@ export default function Users() {
           <option value="Admin">Administrators</option>
         </select>
       </div>
+
       <PeopleTable users={users} refresh={fetchUsers} />
     </div>
   );
