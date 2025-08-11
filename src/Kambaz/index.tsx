@@ -13,13 +13,28 @@ import Settings from "./Settings";
 import ProtectedRoute from "./Account/ProtectedRoute";
 import * as courseClient from "./Courses/client";
 import Enrollments from "./Enrollments";
+import { useSelector } from "react-redux";
 
 export default function Kambaz() {
   const [courses, setCourses] = useState<any[]>([]);
+  const currentUser = useSelector((state: any) => state.account.currentUser);
+  const isFaculty =
+    currentUser?.role === "Instructor" || currentUser?.role === "Admin";
 
   useEffect(() => {
-    courseClient.fetchAllCourses().then(setCourses).catch(console.error);
-  }, []);
+    const load = async () => {
+      if (!currentUser) {
+        setCourses([]);
+        return;
+      }
+      if (isFaculty) {
+        setCourses(await courseClient.fetchAllCourses());
+      } else {
+        setCourses(await courseClient.findMyCourses());
+      }
+    };
+    load().catch(console.error);
+  }, [currentUser?.role]);
 
   const initialCourse = {
     _id: "",
