@@ -12,7 +12,7 @@ import Inbox from "./Inbox";
 import Settings from "./Settings";
 import ProtectedRoute from "./Account/ProtectedRoute";
 import * as courseClient from "./Courses/client";
-import * as userClient from "./Account/client"; 
+import * as userClient from "./Account/client";
 import Enrollments from "./Enrollments";
 import { useSelector } from "react-redux";
 
@@ -50,7 +50,7 @@ export default function Kambaz() {
       }
     };
     load().catch(console.error);
-  }, [currentUser?._id, currentUser?.role, enrolling]); 
+  }, [currentUser?._id, currentUser?.role, enrolling]);
 
   const initialCourse = {
     _id: "",
@@ -92,6 +92,23 @@ export default function Kambaz() {
     }
   };
 
+  // NEW: enroll/unenroll the current user and update the local enrolled flag
+  const updateEnrollment = async (courseId: string, enrolled: boolean) => {
+    if (!currentUser?._id) return;
+    try {
+      if (enrolled) {
+        await userClient.enrollIntoCourse(currentUser._id, courseId);
+      } else {
+        await userClient.unenrollFromCourse(currentUser._id, courseId);
+      }
+      setCourses((cs) =>
+        cs.map((c) => (c._id === courseId ? { ...c, enrolled } : c))
+      );
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <Session>
       <div id="wd-kambaz">
@@ -118,6 +135,7 @@ export default function Kambaz() {
                           updateCourse={updateCourse}
                           enrolling={enrolling}
                           setEnrolling={setEnrolling}
+                          updateEnrollment={updateEnrollment} 
                         />
                       </ProtectedRoute>
                     }

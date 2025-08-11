@@ -64,3 +64,8 @@ export const updateModule = async (module: any) => {
   );
   return data;
 };
+
+export const findUsersForCourse = async (courseId: string) => {
+  const { data } = await axiosWithCredentials.get(`${COURSES_API}/${courseId}/users`);
+  return data;
+};

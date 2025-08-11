@@ -21,6 +21,8 @@ interface DashboardProps {
   updateCourse: () => void;
   enrolling?: boolean;
   setEnrolling?: (v: boolean) => void;
+  // NEW: wire up enroll/unenroll action
+  updateEnrollment?: (courseId: string, enrolled: boolean) => void;
 }
 
 export default function Dashboard({
@@ -32,6 +34,7 @@ export default function Dashboard({
   deleteCourse,
   enrolling = false,
   setEnrolling = () => {},
+  updateEnrollment = () => {}, // NEW default noop
 }: DashboardProps) {
   const currentUser = useSelector(
     (state: RootState) => state.account.currentUser
@@ -131,11 +134,12 @@ export default function Dashboard({
                   Go
                 </Link>
 
-                {/* If/when you wire up enroll/unenroll, c.enrolled is already computed */}
+                {/* Enroll/Unenroll when toggle is ON */}
                 {enrolling && (
                   <Button
-                    className={`ms-2 ${c.enrolled ? "btn-danger" : "btn-success"}`}
-                    onClick={() => {}}
+                    className="ms-2"
+                    variant={c.enrolled ? "danger" : "success"}
+                    onClick={() => updateEnrollment(c._id, !c.enrolled)} // NEW
                   >
                     {c.enrolled ? "Unenroll" : "Enroll"}
                   </Button>
