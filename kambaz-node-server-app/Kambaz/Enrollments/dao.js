@@ -1,17 +1,28 @@
-// kambaz-node-server-app/Kambaz/Enrollments/dao.js
-import { v4 as uuidv4 } from "uuid";
-import db from "../../Database/index.js";
+// File: kambaz-node-server-app/Kambaz/Enrollments/dao.js
+import model from "./model.js";
 
 export function findEnrollmentsForUser(userId) {
-  return db.enrollments.filter(e => e.user === userId);
+  return model.find({ user: userId });
 }
 
-export function enrollUserInCourse(userId, courseId) {
-  const newE = { _id: uuidv4(), user: userId, course: courseId };
-  db.enrollments.push(newE);
-  return newE;
+export async function findCoursesForUser(userId) {
+  const enrollments = await model.find({ user: userId }).populate("course");
+  return enrollments.map((e) => e.course);
+}
+
+export async function findUsersForCourse(courseId) {
+  const enrollments = await model.find({ course: courseId }).populate("user");
+  return enrollments.map((e) => e.user);
+}
+
+export function enrollUserInCourse(user, course) {
+  return model.create({
+    _id: `${user}-${course}`,   
+    user,
+    course,
+  });
 }
 
 export function unenrollById(enrollmentId) {
-  db.enrollments = db.enrollments.filter(e => e._id !== enrollmentId);
+  return model.deleteOne({ _id: enrollmentId });
 }

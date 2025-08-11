@@ -1,6 +1,6 @@
 // File: kambaz-node-server-app/Kambaz/Users/routes.js
 import * as dao from "./dao.js";
-import * as courseDao from "../Courses/dao.js";
+import * as courseDao from "../Courses/dao.js"; 
 import * as enrollmentsDao from "../Enrollments/dao.js";
 
 export default function UserRoutes(app) {
@@ -52,7 +52,9 @@ export default function UserRoutes(app) {
       req.session.currentUser = currentUser;
       return res.json(currentUser);
     }
-    return res.status(401).json({ message: "Unable to login. Try again later." });
+    return res
+      .status(401)
+      .json({ message: "Unable to login. Try again later." });
   };
 
   const signout = (req, res) => {
@@ -80,16 +82,20 @@ export default function UserRoutes(app) {
     res.json(updatedUser);
   };
 
-  const findCoursesForEnrolledUser = (req, res) => {
-    let userId = req.params.userId;
-    if (userId === "current") {
-      const cu = req.session.currentUser;
-      if (!cu) {
-        return res.sendStatus(401);
-      }
-      userId = cu._id;
+  const findCoursesForUser = async (req, res) => {
+    const currentUser = req.session.currentUser;
+    if (!currentUser) return res.sendStatus(401);
+
+    // Admin: return every course
+    if (currentUser.role === "Admin") {
+      const all = await courseDao.findAllCourses();
+      return res.json(all);
     }
-    const courses = courseDao.findCoursesForEnrolledUser(userId);
+
+    let { userId } = req.params;
+    if (userId === "current") userId = currentUser._id;
+
+    const courses = await enrollmentsDao.findCoursesForUser(userId);
     res.json(courses);
   };
 
@@ -100,8 +106,9 @@ export default function UserRoutes(app) {
     res.json(newCourse);
   };
 
+  // routes
   app.post("/api/users/current/courses", createCourseForCurrent);
-  app.get("/api/users/:userId/courses", findCoursesForEnrolledUser);
+  app.get("/api/users/:userId/courses", findCoursesForUser); 
   app.post("/api/users", createUser);
   app.get("/api/users", findAllUsers);
   app.get("/api/users/:userId", findUserById);

@@ -19,6 +19,8 @@ interface DashboardProps {
   addNewCourse: () => void;
   deleteCourse: (id: string) => void;
   updateCourse: () => void;
+  enrolling?: boolean;
+  setEnrolling?: (v: boolean) => void;
 }
 
 export default function Dashboard({
@@ -28,6 +30,8 @@ export default function Dashboard({
   addNewCourse,
   updateCourse,
   deleteCourse,
+  enrolling = false,
+  setEnrolling = () => {},
 }: DashboardProps) {
   const currentUser = useSelector(
     (state: RootState) => state.account.currentUser
@@ -43,7 +47,17 @@ export default function Dashboard({
 
   return (
     <div id="wd-dashboard" className="p-4" style={{ marginLeft: 110 }}>
-      <h1 id="wd-dashboard-title">Dashboard</h1>
+      <h1 id="wd-dashboard-title" className="d-flex align-items-center">
+        <span>Dashboard</span>
+        <Button
+          className="ms-auto"
+          size="sm"
+          variant="primary"
+          onClick={() => setEnrolling(!enrolling)}
+        >
+          {enrolling ? "My Courses" : "All Courses"}
+        </Button>
+      </h1>
       <hr />
       {isFaculty && (
         <>
@@ -116,12 +130,23 @@ export default function Dashboard({
                 >
                   Go
                 </Link>
+
+                {/* If/when you wire up enroll/unenroll, c.enrolled is already computed */}
+                {enrolling && (
+                  <Button
+                    className={`ms-2 ${c.enrolled ? "btn-danger" : "btn-success"}`}
+                    onClick={() => {}}
+                  >
+                    {c.enrolled ? "Unenroll" : "Enroll"}
+                  </Button>
+                )}
+
                 {isFaculty && (
                   <>
                     <Button
                       id="wd-delete-course-click"
                       variant="danger"
-                      className="me-2"
+                      className="ms-2"
                       onClick={() => deleteCourse(c._id)}
                     >
                       Delete
@@ -129,6 +154,7 @@ export default function Dashboard({
                     <Button
                       id="wd-edit-course-click"
                       variant="warning"
+                      className="ms-2"
                       onClick={() => setCourse(c)}
                     >
                       Edit

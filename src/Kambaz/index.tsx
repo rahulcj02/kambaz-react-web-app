@@ -12,6 +12,7 @@ import Inbox from "./Inbox";
 import Settings from "./Settings";
 import ProtectedRoute from "./Account/ProtectedRoute";
 import * as courseClient from "./Courses/client";
+import * as userClient from "./Account/client"; 
 import Enrollments from "./Enrollments";
 import { useSelector } from "react-redux";
 
@@ -21,20 +22,35 @@ export default function Kambaz() {
   const isFaculty =
     currentUser?.role === "Instructor" || currentUser?.role === "Admin";
 
+  const [enrolling, setEnrolling] = useState<boolean>(false);
+
+  // when user/role or toggle changes, refetch appropriately
   useEffect(() => {
     const load = async () => {
       if (!currentUser) {
         setCourses([]);
         return;
       }
-      if (isFaculty) {
-        setCourses(await courseClient.fetchAllCourses());
+      if (!enrolling) {
+        // Admin/faculty see ALL, students still only their courses
+        if (isFaculty) {
+          setCourses(await courseClient.fetchAllCourses());
+        } else {
+          setCourses(await userClient.findCoursesForUser("current"));
+        }
       } else {
-        setCourses(await courseClient.findMyCourses());
+        // enrolling=true: show ALL courses but mark which ones the user has
+        const all = await courseClient.fetchAllCourses();
+        const mine = await userClient.findCoursesForUser("current");
+        const mineSet = new Set(mine.map((c: any) => c._id));
+        const merged = all.map((c: any) =>
+          mineSet.has(c._id) ? { ...c, enrolled: true } : { ...c, enrolled: false }
+        );
+        setCourses(merged);
       }
     };
     load().catch(console.error);
-  }, [currentUser?.role]);
+  }, [currentUser?._id, currentUser?.role, enrolling]); 
 
   const initialCourse = {
     _id: "",
@@ -100,6 +116,8 @@ export default function Kambaz() {
                           addNewCourse={addNewCourse}
                           deleteCourse={deleteCourse}
                           updateCourse={updateCourse}
+                          enrolling={enrolling}
+                          setEnrolling={setEnrolling}
                         />
                       </ProtectedRoute>
                     }
