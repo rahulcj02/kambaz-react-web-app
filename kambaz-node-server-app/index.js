@@ -27,7 +27,7 @@ mongoose
   .catch((err) => console.error("Mongo connection error:", err));
 
 const app = express();
-
+app.set("trust proxy", 1);
 app.use(
   cors({
     credentials: true, // support cookies
@@ -46,7 +46,7 @@ if (process.env.NODE_ENV !== "development") {
   sessionOptions.cookie = {
     sameSite: "none",
     secure: true,
-    domain: process.env.NODE_SERVER_DOMAIN,
+    //domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
 app.use(session(sessionOptions));
