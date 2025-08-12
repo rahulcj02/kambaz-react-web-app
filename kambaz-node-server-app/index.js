@@ -17,7 +17,7 @@ import CourseRoutes from "./Kambaz/Courses/routes.js";
 //import CourseModuleRoutes from "./Kambaz/Courses/Modules/routes.js";
 import AssignmentRoutes from "./Kambaz/Assignments/routes.js";
 import EnrollmentRoutes from "./Kambaz/Enrollments/routes.js";
-
+import KambazModuleRoutes from "./Kambaz/Modules/routes.js";
 const CONNECTION_STRING =
   process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kambaz";
 
@@ -65,6 +65,7 @@ UserRoutes(app);
 CourseRoutes(app);
 //CourseModuleRoutes(app);
 EnrollmentRoutes(app);
+KambazModuleRoutes(app);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
