@@ -28,12 +28,13 @@ mongoose
 
 const app = express();
 app.set("trust proxy", 1);
-app.use(
-  cors({
-    credentials: true, // support cookies
-    origin: process.env.NETLIFY_URL || "http://localhost:5173",
-  })
-);
+//app.use(
+//  cors({
+//    credentials: true, // support cookies
+//    origin: process.env.NETLIFY_URL || "http://localhost:5173",
+//  })
+//);
+
 
 const sessionOptions = {
   secret: process.env.SESSION_SECRET || "any string",
