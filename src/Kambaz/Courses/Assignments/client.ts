@@ -2,41 +2,20 @@
 import axios from "axios";
 const axiosWithCredentials = axios.create({ withCredentials: true });
 
-export const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
-const COURSES_API      = `${REMOTE_SERVER}/api/courses`;
-const ASSIGNMENTS_API  = `${REMOTE_SERVER}/api/assignments`;
+const REMOTE = import.meta.env.VITE_REMOTE_SERVER;
 
-export const fetchAssignments = async (courseId: string) => {
-  const { data } = await axiosWithCredentials.get(
-    `${COURSES_API}/${courseId}/assignments`
-  );
-  return data;
-};
+// ← CALLBACK: fetch from the server route you implemented
+export const fetchAssignments = (courseId: string) =>
+  axiosWithCredentials
+    .get(`${REMOTE}/api/courses/${courseId}/assignments`)
+    .then(r => r.data as any[]);
 
-export const getAssignment = async (aid: string) => {
-  const { data } = await axiosWithCredentials.get(
-    `${ASSIGNMENTS_API}/${aid}`
-  );
-  return data;
-};
+// (the rest stays the same)
+export const createAssignment = (a: any) =>
+  axiosWithCredentials.post(`${REMOTE}/api/assignments`, a).then(r => r.data);
 
-export const createAssignment = async (assignment: any) => {
-  // no _id necessary; server will add one if missing
-  const { data } = await axiosWithCredentials.post(
-    ASSIGNMENTS_API,
-    assignment
-  );
-  return data;
-};
+export const updateAssignmentClient = (a: any) =>
+  axiosWithCredentials.put(`${REMOTE}/api/assignments/${a._id}`, a).then(r => r.data);
 
-export const updateAssignmentClient = async (assignment: any) => {
-  const { data } = await axiosWithCredentials.put(
-    `${ASSIGNMENTS_API}/${assignment._id}`,
-    assignment
-  );
-  return data;
-};
-
-export const deleteAssignmentClient = async (aid: string) => {
-  await axiosWithCredentials.delete(`${ASSIGNMENTS_API}/${aid}`);
-};
+export const deleteAssignmentClient = (aid: string) =>
+  axiosWithCredentials.delete(`${REMOTE}/api/assignments/${aid}`);

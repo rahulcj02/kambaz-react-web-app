@@ -1,24 +1,31 @@
-// kambaz-node-server-app/Kambaz/Assignments/dao.js
-import model from "./model.js";
+// kambaz-node-server-app/Kambaz/Courses/Assignments/dao.js
+import Database from "../../Database/index.js";
 import { v4 as uuidv4 } from "uuid";
 
-export async function findAssignmentsForCourse(courseId) {
-  return model.find({ course: courseId });
+export function findAssignmentsForCourse(courseId) {
+  const { assignments } = Database;
+  return assignments.filter(a => a.course === courseId);
 }
 
-export async function findAssignmentById(aid) {
-  return model.findById(aid);
+export function findAssignmentById(aid) {
+  const { assignments } = Database;
+  return assignments.find(a => a._id === aid);
 }
 
-export async function createAssignment(a) {
-  const toCreate = { ...a, _id: a._id || uuidv4() }; 
-  return model.create(toCreate);
+export function createAssignment(a) {
+  const newA = { _id: uuidv4(), ...a };
+  Database.assignments.push(newA);
+  return newA;
 }
 
-export async function updateAssignment(aid, updates) {
-  return model.findByIdAndUpdate(aid, { $set: updates }, { new: true });
+export function updateAssignment(aid, updates) {
+  const { assignments } = Database;
+  const a = assignments.find(x => x._id === aid);
+  Object.assign(a, updates);
+  return a;
 }
 
-export async function deleteAssignment(aid) {
-  return model.deleteOne({ _id: aid });
+export function deleteAssignment(aid) {
+  const { assignments } = Database;
+  Database.assignments = assignments.filter(x => x._id !== aid);
 }
