@@ -28,13 +28,26 @@ mongoose
 
 const app = express();
 app.set("trust proxy", 1);
-//app.use(
-//  cors({
-//    credentials: true, // support cookies
-//    origin: process.env.NETLIFY_URL || "http://localhost:5173",
-//  })
-//);
 
+// ADD THIS BACK (before session/routes)
+const allowed = [
+  process.env.NETLIFY_URL,      // e.g. https://your-site.netlify.app
+  "http://localhost:5173",
+].filter(Boolean);
+
+// helps caches pick correct CORS per origin
+app.use((req, res, next) => { res.header("Vary", "Origin"); next(); });
+
+app.use(
+  cors({
+    credentials: true,
+    origin(origin, cb) {
+      if (!origin) return cb(null, true); // curl/postman
+      const ok = allowed.includes(origin) || /\.netlify\.app$/.test(origin);
+      cb(ok ? null : new Error("CORS blocked"), ok);
+    },
+  })
+);
 
 const sessionOptions = {
   secret: process.env.SESSION_SECRET || "any string",
@@ -42,12 +55,11 @@ const sessionOptions = {
   saveUninitialized: false,
 };
 if (process.env.NODE_ENV !== "development") {
-  // production tweaks
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
     sameSite: "none",
     secure: true,
-    //domain: process.env.NODE_SERVER_DOMAIN,
+    // no domain on purpose
   };
 }
 app.use(session(sessionOptions));
